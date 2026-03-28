@@ -8,28 +8,74 @@
 <body>
     <h1>To-Do List</h1>
     <ul id="todo-list"></ul>
+
     <form id="todo-form">
         <input type="text" id="title" placeholder="Title" required>
         <input type="text" id="description" placeholder="Description" required>
         <button type="submit">Add To-Do</button>
     </form>
+
     <script>
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
             const todoList = document.getElementById('todo-list');
             todoList.innerHTML = '';
+
             todos.forEach(todo => {
                 const li = document.createElement('li');
-                li.textContent = `${todo.title}: ${todo.description} (Completed: ${todo.completed})`;
+
+                li.innerHTML = `
+                    <strong>${todo.title}</strong>: ${todo.description} (Completed: ${todo.completed})
+                    <br/>
+                `;
+
+                // ===== 댓글 목록 =====
+                const commentList = document.createElement('ul');
+
+                if (todo.comments) {
+                    todo.comments.forEach(comment => {
+                        const c = document.createElement('li');
+                        c.textContent = comment.content;
+                        commentList.appendChild(c);
+                    });
+                }
+
+                li.appendChild(commentList);
+
+                // ===== 댓글 입력 =====
+                const input = document.createElement('input');
+                input.placeholder = "댓글 입력";
+
+                const button = document.createElement('button');
+                button.textContent = "댓글 추가";
+
+                button.onclick = async () => {
+                    await fetch(`/todos/${todo.id}/comments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ content: input.value })
+                    });
+                    fetchTodos();
+                };
+
+                li.appendChild(input);
+                li.appendChild(button);
+
+                // ===== 기존 버튼 =====
                 const editButton = document.createElement('button');
                 editButton.textContent = 'Edit';
                 editButton.onclick = () => editTodo(todo.id);
+
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.onclick = () => deleteTodo(todo.id);
+
                 li.appendChild(editButton);
                 li.appendChild(deleteButton);
+
                 todoList.appendChild(li);
             });
         }
@@ -38,6 +84,7 @@
             const title = prompt('Enter new title:');
             const description = prompt('Enter new description:');
             const completed = confirm('Is this task completed?');
+
             const response = await fetch(`/todos/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -45,6 +92,7 @@
                 },
                 body: JSON.stringify({ id, title, description, completed })
             });
+
             if (response.ok) {
                 fetchTodos();
             }
@@ -54,6 +102,7 @@
             const response = await fetch(`/todos/${id}`, {
                 method: 'DELETE'
             });
+
             if (response.ok) {
                 fetchTodos();
             }
@@ -61,15 +110,23 @@
 
         document.getElementById('todo-form').addEventListener('submit', async (event) => {
             event.preventDefault();
+
             const title = document.getElementById('title').value;
             const description = document.getElementById('description').value;
+
             const response = await fetch('/todos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: Date.now(), title, description, completed: false })
+                body: JSON.stringify({
+                    id: Date.now(),
+                    title,
+                    description,
+                    completed: false
+                })
             });
+
             if (response.ok) {
                 fetchTodos();
             }

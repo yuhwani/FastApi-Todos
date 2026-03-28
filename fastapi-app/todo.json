@@ -1,32 +1,16 @@
 [
     {
-        "id": 1774683343201,
-        "title": "\ucc44\uc18c",
-        "description": "\ud1a0\ub9c8\ud1a0",
-        "completed": false
+        "id": 1,
+        "title": "과제하기",
+        "description": "CI/CD 과제 제출",
+        "completed": false,
+        "comments": []
     },
     {
-        "id": 1774683350320,
-        "title": "\uacfc\uc77c",
-        "description": "\ubcf5\uc22d\uc544",
-        "completed": false
-    },
-    {
-        "id": 1774683355995,
-        "title": "\uacfc\uc77c",
-        "description": "\uc0ac\uacfc",
-        "completed": false
-    },
-    {
-        "id": 1774683361185,
-        "title": "\uacfc\uc77c",
-        "description": "\ubc14\ub098\ub098",
-        "completed": false
-    },
-    {
-        "id": 1774683375024,
-        "title": "\ucee4\ud53c",
-        "description": "\uc544\uba54\ub9ac\uce74\ub178",
-        "completed": false
+        "id": 2,
+        "title": "운동하기",
+        "description": "헬스장 가기",
+        "completed": true,
+        "comments": []
     }
 ]
