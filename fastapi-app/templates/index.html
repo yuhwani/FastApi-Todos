@@ -1,135 +1,332 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        /* 입력 폼 */
+        .form-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .form-card input {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-card input:focus { border-color: #6c63ff; }
+
+        .btn-add {
+            padding: 10px 20px;
+            background: #6c63ff;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover { background: #574fd6; }
+
+        /* Todo 카드 */
+        .todo-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin-bottom: 12px;
+            transition: opacity 0.2s;
+        }
+
+        .todo-card.completed { opacity: 0.55; }
+
+        .todo-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        /* 토글 체크박스 */
+        .toggle {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border-radius: 50%;
+            border: 2px solid #6c63ff;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .toggle.done {
+            background: #6c63ff;
+            border-color: #6c63ff;
+        }
+
+        .toggle.done::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translateY(-1px);
+        }
+
+        .todo-text { flex: 1; }
+
+        .todo-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 2px;
+        }
+
+        .todo-card.completed .todo-title {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .todo-desc {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn-icon {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-edit { background: #f0eeff; color: #6c63ff; }
+        .btn-edit:hover { background: #e0dbff; }
+        .btn-del { background: #fff0f0; color: #e74c3c; }
+        .btn-del:hover { background: #ffd9d9; }
+
+        /* 댓글 영역 */
+        .comments-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+
+        .comment-item {
+            font-size: 13px;
+            color: #444;
+            padding: 5px 10px;
+            background: #f8f8fc;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .comment-form input {
+            flex: 1;
+            padding: 7px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .comment-form input:focus { border-color: #6c63ff; }
+
+        .btn-comment {
+            padding: 7px 14px;
+            background: #6c63ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-comment:hover { background: #574fd6; }
+
+        .empty {
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            padding: 40px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>To-Do List</h1>
-    <ul id="todo-list"></ul>
+    <div class="container">
+        <h1>할 일 목록</h1>
 
-    <form id="todo-form">
-        <input type="text" id="title" placeholder="Title" required>
-        <input type="text" id="description" placeholder="Description" required>
-        <button type="submit">Add To-Do</button>
-    </form>
+        <div class="form-card">
+            <input type="text" id="title" placeholder="제목" required>
+            <input type="text" id="description" placeholder="설명">
+            <button class="btn-add" onclick="addTodo()">+ 추가</button>
+        </div>
+
+        <div id="todo-list"></div>
+    </div>
 
     <script>
         async function fetchTodos() {
-            const response = await fetch('/todos');
-            const todos = await response.json();
-            const todoList = document.getElementById('todo-list');
-            todoList.innerHTML = '';
+            const res = await fetch('/todos');
+            const todos = await res.json();
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+
+            if (todos.length === 0) {
+                list.innerHTML = '<div class="empty">할 일이 없습니다 🎉</div>';
+                return;
+            }
 
             todos.forEach(todo => {
-                const li = document.createElement('li');
+                const card = document.createElement('div');
+                card.className = 'todo-card' + (todo.completed ? ' completed' : '');
 
-                li.innerHTML = `
-                    <strong>${todo.title}</strong>: ${todo.description} (Completed: ${todo.completed})
-                    <br/>
+                // 댓글 HTML
+                const commentsHtml = (todo.comments || [])
+                    .map(c => `<div class="comment-item">💬 ${c.content}</div>`)
+                    .join('');
+
+                card.innerHTML = `
+                    <div class="todo-header">
+                        <div class="toggle ${todo.completed ? 'done' : ''}" onclick="toggleTodo(${todo.id})"></div>
+                        <div class="todo-text">
+                            <div class="todo-title">${todo.title}</div>
+                            <div class="todo-desc">${todo.description}</div>
+                        </div>
+                        <div class="todo-actions">
+                            <button class="btn-icon btn-edit" onclick="editTodo(${todo.id})">수정</button>
+                            <button class="btn-icon btn-del" onclick="deleteTodo(${todo.id})">삭제</button>
+                        </div>
+                    </div>
+                    <div class="comments-section">
+                        ${commentsHtml}
+                        <div class="comment-form">
+                            <input id="comment-${todo.id}" placeholder="댓글 입력..." />
+                            <button class="btn-comment" onclick="addComment(${todo.id})">등록</button>
+                        </div>
+                    </div>
                 `;
-
-                // ===== 댓글 목록 =====
-                const commentList = document.createElement('ul');
-
-                if (todo.comments) {
-                    todo.comments.forEach(comment => {
-                        const c = document.createElement('li');
-                        c.textContent = comment.content;
-                        commentList.appendChild(c);
-                    });
-                }
-
-                li.appendChild(commentList);
-
-                // ===== 댓글 입력 =====
-                const input = document.createElement('input');
-                input.placeholder = "댓글 입력";
-
-                const button = document.createElement('button');
-                button.textContent = "댓글 추가";
-
-                button.onclick = async () => {
-                    await fetch(`/todos/${todo.id}/comments`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ content: input.value })
-                    });
-                    fetchTodos();
-                };
-
-                li.appendChild(input);
-                li.appendChild(button);
-
-                // ===== 기존 버튼 =====
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Edit';
-                editButton.onclick = () => editTodo(todo.id);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
-                deleteButton.onclick = () => deleteTodo(todo.id);
-
-                li.appendChild(editButton);
-                li.appendChild(deleteButton);
-
-                todoList.appendChild(li);
+                list.appendChild(card);
             });
+        }
+
+        async function addTodo() {
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            if (!title) return;
+
+            await fetch('/todos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: Date.now(), title, description, completed: false })
+            });
+
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            fetchTodos();
+        }
+
+        async function toggleTodo(id) {
+            await fetch(`/todos/${id}/toggle`, { method: 'PATCH' });
+            fetchTodos();
         }
 
         async function editTodo(id) {
-            const title = prompt('Enter new title:');
-            const description = prompt('Enter new description:');
-            const completed = confirm('Is this task completed?');
+            const title = prompt('새 제목:');
+            if (!title) return;
+            const description = prompt('새 설명:');
+            const completed = confirm('완료 상태로 변경할까요?');
 
-            const response = await fetch(`/todos/${id}`, {
+            await fetch(`/todos/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id, title, description, completed })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, title, description: description || '', completed })
             });
-
-            if (response.ok) {
-                fetchTodos();
-            }
+            fetchTodos();
         }
 
         async function deleteTodo(id) {
-            const response = await fetch(`/todos/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
-                fetchTodos();
-            }
+            if (!confirm('정말 삭제할까요?')) return;
+            await fetch(`/todos/${id}`, { method: 'DELETE' });
+            fetchTodos();
         }
 
-        document.getElementById('todo-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        async function addComment(todoId) {
+            const input = document.getElementById(`comment-${todoId}`);
+            const content = input.value.trim();
+            if (!content) return;
 
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-
-            const response = await fetch('/todos', {
+            await fetch(`/todos/${todoId}/comments`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: Date.now(),
-                    title,
-                    description,
-                    completed: false
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content })
             });
+            input.value = '';
+            fetchTodos();
+        }
 
-            if (response.ok) {
-                fetchTodos();
-            }
+        // Enter 키로 Todo 추가
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && document.activeElement.id === 'title') addTodo();
         });
 
         fetchTodos();
