@@ -1,2 +1,6 @@
 fastapi
-uvicorn[standard]		##zz
+uvicorn[standard]	
+pytest
+pytest-html
+httpx
+pytest-cov

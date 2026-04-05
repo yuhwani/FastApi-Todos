@@ -1,16 +1,1 @@
-[
-    {
-        "id": 1,
-        "title": "과제하기",
-        "description": "CI/CD 과제 제출",
-        "completed": false,
-        "comments": []
-    },
-    {
-        "id": 2,
-        "title": "운동하기",
-        "description": "헬스장 가기",
-        "completed": true,
-        "comments": []
-    }
-]
+[]
