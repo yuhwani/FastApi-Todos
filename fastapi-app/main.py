@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
+from typing import Optional
 import json
 import os
 
@@ -21,6 +22,8 @@ class TodoItem(BaseModel):
     title: str
     description: str
     completed: bool
+    start_date: Optional[str] = None   # YYYY-MM-DD
+    end_date: Optional[str] = None     # YYYY-MM-DD
     comments: list[CommentItem] = Field(default_factory=list)
 
 # JSON 파일 경로
@@ -32,10 +35,14 @@ def load_todos():
         with open(TODO_FILE, "r", encoding="utf-8") as file:
             todos = json.load(file)
 
-            # 기존 데이터에 comments가 없을 수 있으니 보정
+            # 기존 데이터에 없는 필드 보정
             for todo in todos:
                 if "comments" not in todo:
                     todo["comments"] = []
+                if "start_date" not in todo:
+                    todo["start_date"] = None
+                if "end_date" not in todo:
+                    todo["end_date"] = None
 
             return todos
     return []

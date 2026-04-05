@@ -21,13 +21,16 @@ def reset_state():
     save_todos([])
 
 
-def make_todo(id=1, title="Test", description="Test description", completed=False, comments=None):
+def make_todo(id=1, title="Test", description="Test description", completed=False,
+             start_date=None, end_date=None, comments=None):
     """테스트용 TodoItem dict 생성 헬퍼."""
     return {
         "id": id,
         "title": title,
         "description": description,
         "completed": completed,
+        "start_date": start_date,
+        "end_date": end_date,
         "comments": comments if comments is not None else [],
     }
 
@@ -334,3 +337,75 @@ class TestValidation:
     def test_create_empty_body_returns_422(self):
         response = client.post("/todos", json={})
         assert response.status_code == 422
+
+
+# ══════════════════════════════════════════════
+# 5. 날짜 기능 (Date Range)
+# ══════════════════════════════════════════════
+
+class TestDateRange:
+    """시작/마감 날짜 저장·조회·수정·기본값을 검증."""
+
+    def test_create_with_dates(self):
+        """시작·마감 날짜를 포함해 생성하면 그대로 반환된다."""
+        response = client.post("/todos", json=make_todo(1, start_date="2026-04-01", end_date="2026-04-30"))
+        data = response.json()
+        assert response.status_code == 200
+        assert data["start_date"] == "2026-04-01"
+        assert data["end_date"] == "2026-04-30"
+
+    def test_create_without_dates_defaults_to_null(self):
+        """날짜 없이 생성하면 start_date·end_date는 null이다."""
+        response = client.post("/todos", json=make_todo(1))
+        data = response.json()
+        assert data["start_date"] is None
+        assert data["end_date"] is None
+
+    def test_create_with_only_end_date(self):
+        """마감 날짜만 지정해도 생성된다."""
+        response = client.post("/todos", json=make_todo(1, end_date="2026-12-31"))
+        data = response.json()
+        assert data["start_date"] is None
+        assert data["end_date"] == "2026-12-31"
+
+    def test_create_with_only_start_date(self):
+        """시작 날짜만 지정해도 생성된다."""
+        response = client.post("/todos", json=make_todo(1, start_date="2026-04-01"))
+        data = response.json()
+        assert data["start_date"] == "2026-04-01"
+        assert data["end_date"] is None
+
+    def test_update_dates(self):
+        """수정 시 날짜가 새 값으로 교체된다."""
+        client.post("/todos", json=make_todo(1, start_date="2026-01-01", end_date="2026-01-31"))
+        updated = make_todo(1, start_date="2026-05-01", end_date="2026-05-31")
+        response = client.put("/todos/1", json=updated)
+        data = response.json()
+        assert data["start_date"] == "2026-05-01"
+        assert data["end_date"] == "2026-05-31"
+
+    def test_update_clear_dates(self):
+        """수정 시 날짜를 null로 지우면 null로 저장된다."""
+        client.post("/todos", json=make_todo(1, start_date="2026-01-01", end_date="2026-01-31"))
+        updated = make_todo(1, start_date=None, end_date=None)
+        response = client.put("/todos/1", json=updated)
+        data = response.json()
+        assert data["start_date"] is None
+        assert data["end_date"] is None
+
+    def test_get_todos_includes_dates(self):
+        """목록 조회 시 날짜 필드가 포함된다."""
+        save_todos([make_todo(1, start_date="2026-04-01", end_date="2026-04-30")])
+        response = client.get("/todos")
+        data = response.json()[0]
+        assert "start_date" in data
+        assert "end_date" in data
+        assert data["start_date"] == "2026-04-01"
+        assert data["end_date"] == "2026-04-30"
+
+    def test_legacy_data_without_dates_gets_null(self):
+        """날짜 필드 없는 기존 데이터를 불러오면 null로 보정된다."""
+        save_todos([{"id": 1, "title": "Old", "description": "D", "completed": False, "comments": []}])
+        loaded = load_todos()
+        assert loaded[0]["start_date"] is None
+        assert loaded[0]["end_date"] is None
