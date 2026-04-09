@@ -1,6 +1,8 @@
 fastapi
-uvicorn[standard]	
+uvicorn[standard]
 pytest
 pytest-html
 httpx
 pytest-cov
+pytest-playwright
+playwright

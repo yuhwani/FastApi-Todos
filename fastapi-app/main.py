@@ -67,7 +67,7 @@ def create_todo(todo: TodoItem):
         if existing_todo["id"] == todo.id:
             raise HTTPException(status_code=400, detail="Todo ID already exists")
 
-    todo_dict = todo.dict()
+    todo_dict = todo.model_dump()
 
     if "comments" not in todo_dict:
         todo_dict["comments"] = []
@@ -82,7 +82,7 @@ def update_todo(todo_id: int, updated_todo: TodoItem):
     todos = load_todos()
     for index, todo in enumerate(todos):
         if todo["id"] == todo_id:
-            updated_todo_dict = updated_todo.dict()
+            updated_todo_dict = updated_todo.model_dump()
 
             # 기존 댓글 유지
             updated_todo_dict["comments"] = todo.get("comments", [])
