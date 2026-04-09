@@ -14,12 +14,13 @@ from playwright.sync_api import Page, expect
 
 def add_todo(page: Page, title: str, description: str = ""):
     """폼을 통해 Todo를 추가하는 헬퍼."""
+    current_count = page.locator(".todo-card").count()
     page.fill("#title", title)
     if description:
         page.fill("#description", description)
     page.click(".btn-add")
     page.wait_for_function(
-        f"document.querySelectorAll('.todo-title').length > 0"
+        f"document.querySelectorAll('.todo-card').length > {current_count}"
     )
 
 
