@@ -84,7 +84,7 @@ def update_todo(todo_id: int, updated_todo: TodoItem) -> dict:
     raise HTTPException(status_code=404, detail="To-Do item not found")
 
 # To-Do 항목 삭제
-@app.delete("/todos/{todo_id}", response_model=dict)
+@app.delete("/todos/{todo_id}", responses={404: {"description": "Not found"}})
 def delete_todo(todo_id: int) -> dict:
     todos = load_todos()
     new_todos = [todo for todo in todos if todo["id"] != todo_id]
@@ -112,7 +112,7 @@ def add_comment(todo_id: int, comment: CommentCreate) -> dict:
     raise HTTPException(status_code=404, detail="To-Do item not found")
 
 # 특정 To-Do의 댓글 조회
-@app.get("/todos/{todo_id}/comments", response_model=list[CommentItem])
+@app.get("/todos/{todo_id}/comments", response_model=list[CommentItem], responses={404: {"description": "Not found"}})
 def get_comments(todo_id: int) -> list:
     todos = load_todos()
 
