@@ -9,150 +9,241 @@
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f0f2f5;
+            background: #0f0f1a;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
+            color: #e0e0e0;
             padding: 40px 16px;
         }
 
         .container {
             width: 100%;
-            max-width: 640px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 24px;
+        /* 헤더 */
+        .header {
             text-align: center;
-            letter-spacing: -0.5px;
+            margin-bottom: 36px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* 통계 배지 */
+        .stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            justify-content: center;
+        }
+
+        .stat-badge {
+            background: #1a1a2e;
+            border: 1px solid #2a2a40;
+            border-radius: 12px;
+            padding: 10px 20px;
+            text-align: center;
+            flex: 1;
+            max-width: 140px;
+        }
+
+        .stat-badge .num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .stat-badge .label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
         }
 
         /* 입력 폼 */
         .form-card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a40;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 28px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        .form-card .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
 
         .form-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .form-card input[type="text"] {
             flex: 1;
             min-width: 120px;
-            padding: 10px 14px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 11px 16px;
+            background: #0f0f1a;
+            border: 1.5px solid #2a2a40;
+            border-radius: 12px;
             font-size: 14px;
+            color: #e0e0e0;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        .form-card input[type="text"]:focus { border-color: #6c63ff; }
+        .form-card input[type="text"]::placeholder { color: #444; }
+        .form-card input[type="text"]:focus { border-color: #a78bfa; }
 
-        /* 날짜 행 */
         .date-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .date-label {
             font-size: 12px;
-            color: #888;
+            color: #555;
             white-space: nowrap;
         }
 
         .date-row input[type="date"] {
             flex: 1;
-            min-width: 130px;
-            padding: 8px 12px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 10px;
+            min-width: 140px;
+            padding: 10px 14px;
+            background: #0f0f1a;
+            border: 1.5px solid #2a2a40;
+            border-radius: 12px;
             font-size: 13px;
+            color: #e0e0e0;
             outline: none;
-            color: #333;
-            transition: border-color 0.2s;
             cursor: pointer;
+            transition: border-color 0.2s;
+            color-scheme: dark;
         }
 
-        .date-row input[type="date"]:focus { border-color: #6c63ff; }
+        .date-row input[type="date"]:focus { border-color: #a78bfa; }
 
-        .date-separator {
-            font-size: 13px;
-            color: #aaa;
-            font-weight: 500;
-        }
+        .date-separator { font-size: 13px; color: #444; }
 
         .btn-add {
-            padding: 10px 20px;
-            background: #6c63ff;
+            padding: 11px 24px;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
             color: #fff;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
-            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.1s;
             align-self: flex-end;
+            letter-spacing: 0.3px;
         }
 
-        .btn-add:hover { background: #574fd6; }
+        .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-add:active { transform: translateY(0); }
+
+        /* 필터 탭 */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1.5px solid #2a2a40;
+            background: transparent;
+            color: #555;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: #a78bfa20;
+            border-color: #a78bfa;
+            color: #a78bfa;
+        }
 
         /* Todo 카드 */
         .todo-card {
-            background: #fff;
+            background: #1a1a2e;
+            border: 1px solid #2a2a40;
             border-radius: 16px;
-            padding: 16px 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            margin-bottom: 12px;
-            transition: opacity 0.2s;
-            border-left: 4px solid transparent;
+            padding: 18px 20px;
+            margin-bottom: 10px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .todo-card.completed { opacity: 0.55; border-left-color: #b0b0b0; }
-        .todo-card.overdue   { border-left-color: #e74c3c; }
-        .todo-card.due-today { border-left-color: #f39c12; }
-        .todo-card.on-track  { border-left-color: #2ecc71; }
+        .todo-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: #2a2a40;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .todo-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .todo-card.completed { opacity: 0.45; }
+        .todo-card.completed::before { background: #333; }
+        .todo-card.overdue::before   { background: #e74c3c; }
+        .todo-card.due-today::before { background: #f39c12; }
+        .todo-card.on-track::before  { background: #2ecc71; }
 
         .todo-header {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 14px;
         }
 
-        /* 토글 체크박스 */
         .toggle {
             width: 22px;
             height: 22px;
             min-width: 22px;
             border-radius: 50%;
-            border: 2px solid #6c63ff;
-            background: #fff;
+            border: 2px solid #3a3a5c;
+            background: transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 2px;
-            transition: background 0.2s, border-color 0.2s;
+            transition: all 0.2s;
         }
 
+        .toggle:hover { border-color: #a78bfa; }
+
         .toggle.done {
-            background: #6c63ff;
-            border-color: #6c63ff;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            border-color: transparent;
         }
 
         .toggle.done::after {
@@ -170,37 +261,35 @@
         .todo-title {
             font-size: 15px;
             font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 2px;
+            color: #e0e0e0;
+            margin-bottom: 3px;
         }
 
         .todo-card.completed .todo-title {
             text-decoration: line-through;
-            color: #999;
+            color: #444;
         }
 
         .todo-desc {
             font-size: 13px;
-            color: #666;
-            margin-bottom: 6px;
+            color: #555;
+            margin-bottom: 8px;
         }
 
-        /* 날짜 배지 */
         .date-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            padding: 3px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
             border-radius: 20px;
-            margin-top: 2px;
         }
 
-        .date-badge.overdue   { background: #ffeaea; color: #e74c3c; }
-        .date-badge.due-today { background: #fff5e0; color: #f39c12; }
-        .date-badge.on-track  { background: #eafaf1; color: #27ae60; }
-        .date-badge.no-date   { background: #f4f4f4; color: #aaa; }
+        .date-badge.overdue   { background: #e74c3c20; color: #e74c3c; border: 1px solid #e74c3c40; }
+        .date-badge.due-today { background: #f39c1220; color: #f39c12; border: 1px solid #f39c1240; }
+        .date-badge.on-track  { background: #2ecc7120; color: #2ecc71; border: 1px solid #2ecc7140; }
+        .date-badge.no-date   { background: #ffffff08; color: #555;    border: 1px solid #2a2a40; }
 
         .todo-actions {
             display: flex;
@@ -215,109 +304,272 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
-        .btn-edit { background: #f0eeff; color: #6c63ff; }
-        .btn-edit:hover { background: #e0dbff; }
-        .btn-del { background: #fff0f0; color: #e74c3c; }
-        .btn-del:hover { background: #ffd9d9; }
+        .btn-edit { background: #a78bfa20; color: #a78bfa; border: 1px solid #a78bfa30; }
+        .btn-edit:hover { background: #a78bfa35; }
+        .btn-del { background: #e74c3c18; color: #e74c3c; border: 1px solid #e74c3c30; }
+        .btn-del:hover { background: #e74c3c30; }
 
-        /* 댓글 영역 */
-        .comments-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+        /* 댓글 */
+        .comments-section {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #1f1f35;
+        }
 
         .comment-item {
             font-size: 13px;
-            color: #444;
-            padding: 5px 10px;
-            background: #f8f8fc;
+            color: #888;
+            padding: 6px 12px;
+            background: #0f0f1a;
             border-radius: 8px;
             margin-bottom: 5px;
+            border: 1px solid #1f1f35;
         }
 
         .comment-form {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             margin-top: 8px;
         }
 
         .comment-form input {
             flex: 1;
-            padding: 7px 12px;
-            border: 1.5px solid #e0e0e0;
+            padding: 8px 12px;
+            background: #0f0f1a;
+            border: 1.5px solid #2a2a40;
             border-radius: 8px;
             font-size: 13px;
+            color: #e0e0e0;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        .comment-form input:focus { border-color: #6c63ff; }
+        .comment-form input::placeholder { color: #444; }
+        .comment-form input:focus { border-color: #a78bfa; }
 
         .btn-comment {
-            padding: 7px 14px;
-            background: #6c63ff;
-            color: #fff;
-            border: none;
+            padding: 8px 14px;
+            background: #a78bfa25;
+            color: #a78bfa;
+            border: 1px solid #a78bfa40;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
             white-space: nowrap;
         }
 
-        .btn-comment:hover { background: #574fd6; }
+        .btn-comment:hover { background: #a78bfa40; }
 
         .empty {
             text-align: center;
-            color: #aaa;
+            color: #333;
             font-size: 14px;
-            padding: 40px 0;
+            padding: 48px 0;
         }
 
-        /* 날짜 수정 모달 */
+        /* ── 캘린더 ── */
+        .calendar-section {
+            margin-top: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cal-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cal-nav button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid #2a2a40;
+            background: #1a1a2e;
+            color: #a78bfa;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cal-nav button:hover { background: #a78bfa20; border-color: #a78bfa; }
+
+        .cal-nav .month-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #e0e0e0;
+            min-width: 110px;
+            text-align: center;
+        }
+
+        .calendar {
+            background: #1a1a2e;
+            border: 1px solid #2a2a40;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .cal-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #13132a;
+            border-bottom: 1px solid #2a2a40;
+        }
+
+        .cal-weekday {
+            text-align: center;
+            padding: 12px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cal-weekday:first-child { color: #e74c3c88; }
+        .cal-weekday:last-child  { color: #60a5fa88; }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .cal-day {
+            min-height: 90px;
+            padding: 8px;
+            border-right: 1px solid #1f1f35;
+            border-bottom: 1px solid #1f1f35;
+            position: relative;
+            transition: background 0.15s;
+        }
+
+        .cal-day:hover { background: #ffffff04; }
+        .cal-day:nth-child(7n) { border-right: none; }
+
+        .cal-day.other-month .day-num { color: #2a2a3a; }
+
+        .cal-day.today {
+            background: #a78bfa0a;
+        }
+
+        .cal-day.today .day-num {
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .day-num {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .cal-day:nth-child(7n+1) .day-num { color: #e74c3c66; }
+        .cal-day:nth-child(7n) .day-num   { color: #60a5fa66; }
+
+        .cal-todo-chip {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: default;
+        }
+
+        .cal-todo-chip.start  { background: #60a5fa20; color: #60a5fa; border-left: 2px solid #60a5fa; }
+        .cal-todo-chip.end    { background: #a78bfa20; color: #a78bfa; border-left: 2px solid #a78bfa; }
+        .cal-todo-chip.both   { background: #2ecc7120; color: #2ecc71; border-left: 2px solid #2ecc71; }
+        .cal-todo-chip.done   { background: #ffffff08; color: #444;    border-left: 2px solid #333; text-decoration: line-through; }
+
+        /* 모달 */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.65);
             z-index: 100;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(4px);
         }
 
         .modal-overlay.open { display: flex; }
 
         .modal {
-            background: #fff;
-            border-radius: 16px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a40;
+            border-radius: 20px;
             padding: 28px;
-            width: 340px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            width: 360px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
 
-        .modal h2 { font-size: 18px; color: #1a1a2e; }
+        .modal h2 {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         .modal label {
-            font-size: 13px;
+            font-size: 12px;
             color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .modal input {
-            padding: 9px 12px;
-            border: 1.5px solid #e0e0e0;
+            padding: 10px 14px;
+            background: #0f0f1a;
+            border: 1.5px solid #2a2a40;
             border-radius: 10px;
             font-size: 14px;
+            color: #e0e0e0;
             outline: none;
             transition: border-color 0.2s;
+            color-scheme: dark;
         }
 
-        .modal input:focus { border-color: #6c63ff; }
+        .modal input:focus { border-color: #a78bfa; }
 
         .modal-actions {
             display: flex;
@@ -327,39 +579,64 @@
         }
 
         .btn-cancel {
-            padding: 9px 18px;
-            background: #f4f4f4;
+            padding: 10px 20px;
+            background: #ffffff0a;
             color: #555;
-            border: none;
+            border: 1px solid #2a2a40;
             border-radius: 10px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
+        .btn-cancel:hover { background: #ffffff14; }
+
         .btn-save {
-            padding: 9px 18px;
-            background: #6c63ff;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
             color: #fff;
             border: none;
             border-radius: 10px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            transition: opacity 0.2s;
         }
 
-        .btn-save:hover { background: #574fd6; }
+        .btn-save:hover { opacity: 0.88; }
+
+        /* 구분선 */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #2a2a40, transparent);
+            margin: 8px 0 28px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>할 일 목록</h1>
 
-        <!-- 추가 폼 -->
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>✦ Task Board</h1>
+            <p id="today-label"></p>
+        </div>
+
+        <!-- 통계 -->
+        <div class="stats">
+            <div class="stat-badge"><div class="num" id="stat-total">0</div><div class="label">전체</div></div>
+            <div class="stat-badge"><div class="num" id="stat-done">0</div><div class="label">완료</div></div>
+            <div class="stat-badge"><div class="num" id="stat-overdue">0</div><div class="label">기한초과</div></div>
+            <div class="stat-badge"><div class="num" id="stat-today">0</div><div class="label">오늘마감</div></div>
+        </div>
+
+        <!-- 입력 폼 -->
         <div class="form-card">
+            <div class="section-title">새 할 일 추가</div>
             <div class="form-row">
-                <input type="text" id="title" placeholder="제목" required>
-                <input type="text" id="description" placeholder="설명">
+                <input type="text" id="title" placeholder="제목을 입력하세요" required>
+                <input type="text" id="description" placeholder="설명 (선택)">
             </div>
             <div class="date-row">
                 <span class="date-label">시작</span>
@@ -368,10 +645,44 @@
                 <span class="date-label">마감</span>
                 <input type="date" id="end_date">
             </div>
-            <button class="btn-add" onclick="addTodo()">+ 추가</button>
+            <button class="btn-add" onclick="addTodo()">+ 추가하기</button>
+        </div>
+
+        <!-- 필터 탭 -->
+        <div class="filter-tabs">
+            <button class="tab active" onclick="setFilter('all', this)">전체</button>
+            <button class="tab" onclick="setFilter('active', this)">진행중</button>
+            <button class="tab" onclick="setFilter('done', this)">완료</button>
+            <button class="tab" onclick="setFilter('overdue', this)">기한초과</button>
         </div>
 
         <div id="todo-list"></div>
+
+        <div class="divider"></div>
+
+        <!-- 캘린더 -->
+        <div class="calendar-section">
+            <div class="section-header">
+                <h2>📅 일정 캘린더</h2>
+                <div class="cal-nav">
+                    <button onclick="changeMonth(-1)">‹</button>
+                    <span class="month-label" id="month-label"></span>
+                    <button onclick="changeMonth(1)">›</button>
+                </div>
+            </div>
+            <div class="calendar">
+                <div class="cal-weekdays">
+                    <div class="cal-weekday">Sun</div>
+                    <div class="cal-weekday">Mon</div>
+                    <div class="cal-weekday">Tue</div>
+                    <div class="cal-weekday">Wed</div>
+                    <div class="cal-weekday">Thu</div>
+                    <div class="cal-weekday">Fri</div>
+                    <div class="cal-weekday">Sat</div>
+                </div>
+                <div class="cal-grid" id="cal-grid"></div>
+            </div>
+        </div>
     </div>
 
     <!-- 수정 모달 -->
@@ -392,50 +703,74 @@
     <script>
         let editingId = null;
         let editingCompleted = false;
+        let allTodos = [];
+        let currentFilter = 'all';
+        let calYear, calMonth;
 
-        // ── 날짜 상태 판별 ──────────────────────────
-        function getDeadlineStatus(endDate, completed) {
-            if (completed) return 'completed';
-            if (!endDate) return 'no-date';
-            const today = new Date().toISOString().slice(0, 10);
-            if (endDate < today) return 'overdue';
-            if (endDate === today) return 'due-today';
+        const today = new Date().toISOString().slice(0, 10);
+
+        // 오늘 날짜 표시
+        document.getElementById('today-label').textContent =
+            new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+        // ── 필터 ─────────────────────────────────────
+        function setFilter(filter, el) {
+            currentFilter = filter;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            renderTodos();
+        }
+
+        // ── 날짜 상태 판별 ───────────────────────────
+        function getStatus(todo) {
+            if (todo.completed) return 'completed';
+            if (!todo.end_date) return 'no-date';
+            if (todo.end_date < today) return 'overdue';
+            if (todo.end_date === today) return 'due-today';
             return 'on-track';
         }
 
         function badgeLabel(status, startDate, endDate) {
             const fmt = d => d ? d.replace(/-/g, '.') : '';
             if (status === 'no-date') {
-                return startDate
-                    ? `<span class="date-badge no-date">📅 ${fmt(startDate)} ~</span>`
-                    : '';
+                return startDate ? `<span class="date-badge no-date">📅 ${fmt(startDate)} ~</span>` : '';
             }
             const range = startDate ? `${fmt(startDate)} ~ ${fmt(endDate)}` : `~ ${fmt(endDate)}`;
-            const icons = { overdue: '🔴', 'due-today': '🟡', 'on-track': '🟢' };
-            const labels = { overdue: '기한 초과', 'due-today': '오늘 마감', 'on-track': '' };
-            return `<span class="date-badge ${status}">${icons[status]} ${labels[status] ? labels[status] + ' · ' : ''}${range}</span>`;
+            const map = { overdue: ['🔴','기한 초과'], 'due-today': ['🟡','오늘 마감'], 'on-track': ['🟢',''] };
+            const [icon, label] = map[status];
+            return `<span class="date-badge ${status}">${icon}${label ? ' ' + label + ' ·' : ''} ${range}</span>`;
+        }
+
+        // ── 통계 업데이트 ────────────────────────────
+        function updateStats() {
+            document.getElementById('stat-total').textContent   = allTodos.length;
+            document.getElementById('stat-done').textContent    = allTodos.filter(t => t.completed).length;
+            document.getElementById('stat-overdue').textContent = allTodos.filter(t => !t.completed && t.end_date && t.end_date < today).length;
+            document.getElementById('stat-today').textContent   = allTodos.filter(t => !t.completed && t.end_date === today).length;
         }
 
         // ── 목록 렌더 ────────────────────────────────
-        async function fetchTodos() {
-            const res = await fetch('/todos');
-            const todos = await res.json();
+        function renderTodos() {
+            let filtered = allTodos;
+            if (currentFilter === 'active')  filtered = allTodos.filter(t => !t.completed);
+            if (currentFilter === 'done')    filtered = allTodos.filter(t => t.completed);
+            if (currentFilter === 'overdue') filtered = allTodos.filter(t => !t.completed && t.end_date && t.end_date < today);
+
             const list = document.getElementById('todo-list');
             list.innerHTML = '';
 
-            if (todos.length === 0) {
-                list.innerHTML = '<div class="empty">할 일이 없습니다 🎉</div>';
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty">할 일이 없습니다 ✦</div>';
                 return;
             }
 
-            todos.forEach(todo => {
-                const status = getDeadlineStatus(todo.end_date, todo.completed);
+            filtered.forEach(todo => {
+                const status = getStatus(todo);
                 const card = document.createElement('div');
                 card.className = 'todo-card' + (todo.completed ? ' completed' : status !== 'no-date' ? ` ${status}` : '');
 
                 const commentsHtml = (todo.comments || [])
-                    .map(c => `<div class="comment-item">💬 ${c.content}</div>`)
-                    .join('');
+                    .map(c => `<div class="comment-item">💬 ${c.content}</div>`).join('');
 
                 card.innerHTML = `
                     <div class="todo-header">
@@ -462,12 +797,20 @@
             });
         }
 
+        async function fetchTodos() {
+            const res = await fetch('/todos');
+            allTodos = await res.json();
+            updateStats();
+            renderTodos();
+            renderCalendar();
+        }
+
         // ── 추가 ─────────────────────────────────────
         async function addTodo() {
-            const title = document.getElementById('title').value.trim();
+            const title       = document.getElementById('title').value.trim();
             const description = document.getElementById('description').value.trim();
-            const start_date = document.getElementById('start_date').value || null;
-            const end_date = document.getElementById('end_date').value || null;
+            const start_date  = document.getElementById('start_date').value || null;
+            const end_date    = document.getElementById('end_date').value || null;
             if (!title) return;
 
             await fetch('/todos', {
@@ -476,10 +819,7 @@
                 body: JSON.stringify({ id: Date.now(), title, description, completed: false, start_date, end_date })
             });
 
-            document.getElementById('title').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('start_date').value = '';
-            document.getElementById('end_date').value = '';
+            ['title','description','start_date','end_date'].forEach(id => document.getElementById(id).value = '');
             fetchTodos();
         }
 
@@ -491,18 +831,14 @@
 
         // ── 수정 모달 ─────────────────────────────────
         async function openModal(id) {
-            const res = await fetch('/todos');
-            const todos = await res.json();
-            const todo = todos.find(t => t.id === id);
+            const todo = allTodos.find(t => t.id === id);
             if (!todo) return;
-
             editingId = id;
             editingCompleted = todo.completed;
-
             document.getElementById('m-title').value = todo.title;
-            document.getElementById('m-desc').value = todo.description;
+            document.getElementById('m-desc').value  = todo.description;
             document.getElementById('m-start').value = todo.start_date || '';
-            document.getElementById('m-end').value = todo.end_date || '';
+            document.getElementById('m-end').value   = todo.end_date || '';
             document.getElementById('modal').classList.add('open');
         }
 
@@ -512,10 +848,10 @@
         }
 
         async function saveEdit() {
-            const title = document.getElementById('m-title').value.trim();
+            const title       = document.getElementById('m-title').value.trim();
             const description = document.getElementById('m-desc').value.trim();
-            const start_date = document.getElementById('m-start').value || null;
-            const end_date = document.getElementById('m-end').value || null;
+            const start_date  = document.getElementById('m-start').value || null;
+            const end_date    = document.getElementById('m-end').value || null;
             if (!title) return;
 
             await fetch(`/todos/${editingId}`, {
@@ -536,10 +872,9 @@
 
         // ── 댓글 ─────────────────────────────────────
         async function addComment(todoId) {
-            const input = document.getElementById(`comment-${todoId}`);
+            const input   = document.getElementById(`comment-${todoId}`);
             const content = input.value.trim();
             if (!content) return;
-
             await fetch(`/todos/${todoId}/comments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -549,17 +884,110 @@
             fetchTodos();
         }
 
-        // 모달 외부 클릭 시 닫기
+        // ── 캘린더 ───────────────────────────────────
+        function initCalendar() {
+            const now = new Date();
+            calYear  = now.getFullYear();
+            calMonth = now.getMonth();
+        }
+
+        function changeMonth(delta) {
+            calMonth += delta;
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            if (calMonth < 0)  { calMonth = 11; calYear--; }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+            document.getElementById('month-label').textContent = `${calYear}년 ${monthNames[calMonth]}`;
+
+            const grid = document.getElementById('cal-grid');
+            grid.innerHTML = '';
+
+            const firstDay = new Date(calYear, calMonth, 1).getDay();
+            const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+            const prevLast = new Date(calYear, calMonth, 0).getDate();
+
+            // 날짜별 할일 맵 생성
+            const todoMap = {};
+            allTodos.forEach(todo => {
+                [todo.start_date, todo.end_date].forEach((date, idx) => {
+                    if (!date) return;
+                    if (!todoMap[date]) todoMap[date] = [];
+                    todoMap[date].push({ todo, type: idx === 0 ? 'start' : 'end' });
+                });
+                // 시작=마감인 경우 중복 제거 후 'both' 처리
+            });
+
+            // 시작=마감 통합
+            const mergedMap = {};
+            allTodos.forEach(todo => {
+                const s = todo.start_date, e = todo.end_date;
+                if (s && e && s === e) {
+                    if (!mergedMap[s]) mergedMap[s] = [];
+                    mergedMap[s].push({ todo, type: 'both' });
+                } else {
+                    if (s) { if (!mergedMap[s]) mergedMap[s] = []; mergedMap[s].push({ todo, type: 'start' }); }
+                    if (e) { if (!mergedMap[e]) mergedMap[e] = []; mergedMap[e].push({ todo, type: 'end' }); }
+                }
+            });
+
+            const totalCells = Math.ceil((firstDay + lastDate) / 7) * 7;
+
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cal-day';
+
+                let dateStr, dayNum;
+
+                if (i < firstDay) {
+                    dayNum  = prevLast - firstDay + i + 1;
+                    dateStr = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+                    cell.classList.add('other-month');
+                } else if (i >= firstDay + lastDate) {
+                    dayNum  = i - firstDay - lastDate + 1;
+                    dateStr = `${calYear}-${String(calMonth + 2).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+                    cell.classList.add('other-month');
+                } else {
+                    dayNum  = i - firstDay + 1;
+                    dateStr = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+                    if (dateStr === today) cell.classList.add('today');
+                }
+
+                cell.innerHTML = `<span class="day-num">${dayNum}</span>`;
+
+                const items = mergedMap[dateStr] || [];
+                items.slice(0, 3).forEach(({ todo, type }) => {
+                    const chip = document.createElement('span');
+                    chip.className = `cal-todo-chip ${todo.completed ? 'done' : type}`;
+                    chip.textContent = todo.title;
+                    chip.title = todo.title;
+                    cell.appendChild(chip);
+                });
+
+                if (items.length > 3) {
+                    const more = document.createElement('span');
+                    more.className = 'cal-todo-chip no-date';
+                    more.textContent = `+${items.length - 3}`;
+                    cell.appendChild(more);
+                }
+
+                grid.appendChild(cell);
+            }
+        }
+
+        // 이벤트
         document.getElementById('modal').addEventListener('click', e => {
             if (e.target === e.currentTarget) closeModal();
         });
 
-        // Enter 키로 Todo 추가
         document.addEventListener('keydown', e => {
             if (e.key === 'Enter' && document.activeElement.id === 'title') addTodo();
             if (e.key === 'Escape') closeModal();
         });
 
+        initCalendar();
         fetchTodos();
     </script>
 </body>
