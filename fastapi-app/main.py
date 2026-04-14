@@ -134,7 +134,7 @@ def toggle_todo(todo_id: int) -> dict:
     raise HTTPException(status_code=404, detail="To-Do item not found")
 
 # HTML 파일 서빙
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, responses={404: {"description": "Template file not found"}})
 def read_root() -> HTMLResponse:
     if not os.path.exists(TEMPLATE_FILE):
         raise HTTPException(status_code=404, detail="Template file not found")
