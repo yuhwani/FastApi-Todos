@@ -32,7 +32,7 @@ class TestPageLoad:
 
     def test_title_is_visible(self, page: Page, live_server: str):
         page.goto(live_server)
-        expect(page.locator("h1")).to_have_text("할 일 목록")
+        expect(page.locator("h1")).to_have_text("✦ Task Board")
 
     def test_form_inputs_are_visible(self, page: Page, live_server: str):
         page.goto(live_server)
@@ -110,16 +110,16 @@ class TestToggle:
         add_todo(page, "토글 테스트")
 
         page.locator(".toggle").first.click()
-        page.wait_for_timeout(400)
+        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length > 0")
 
-        expect(page.locator(".todo-card").first).to_have_class("todo-card completed")
+        expect(page.locator(".todo-card.completed").first).to_be_visible()
 
     def test_toggle_shows_checkmark(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "체크 표시 테스트")
 
         page.locator(".toggle").first.click()
-        page.wait_for_timeout(400)
+        page.wait_for_function("document.querySelectorAll('.toggle.done').length > 0")
 
         expect(page.locator(".toggle.done").first).to_be_visible()
 
@@ -127,11 +127,11 @@ class TestToggle:
         page.goto(live_server)
         add_todo(page, "두 번 토글")
 
-        toggle = page.locator(".toggle").first
-        toggle.click()
-        page.wait_for_timeout(400)
-        toggle.click()
-        page.wait_for_timeout(400)
+        page.locator(".toggle").first.click()
+        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length > 0")
+
+        page.locator(".toggle").first.click()
+        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length === 0")
 
         expect(page.locator(".todo-card").first).not_to_have_class("completed")
 
@@ -140,7 +140,7 @@ class TestToggle:
         add_todo(page, "취소선 테스트")
 
         page.locator(".toggle").first.click()
-        page.wait_for_timeout(400)
+        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length > 0")
 
         title_el = page.locator(".todo-card.completed .todo-title").first
         text_decoration = title_el.evaluate("el => getComputedStyle(el).textDecoration")
