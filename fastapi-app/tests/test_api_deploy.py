@@ -1,7 +1,7 @@
 import os
 import requests
 
-BASE_URL = os.getenv("BASE_URL", "http://163.239.77.77:8011")
+BASE_URL = os.getenv("BASE_URL", "http://163.239.77.65:8003")
 
 def test_root():
     response = requests.get(f"{BASE_URL}/")
