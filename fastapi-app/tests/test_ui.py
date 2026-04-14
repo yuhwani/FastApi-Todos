@@ -109,38 +109,39 @@ class TestToggle:
         page.goto(live_server)
         add_todo(page, "토글 테스트")
 
-        page.locator(".toggle").first.click()
-        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length > 0")
+        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
+            page.locator(".toggle").first.click()
 
-        expect(page.locator(".todo-card.completed").first).to_be_visible()
+        expect(page.locator(".todo-card.completed").first).to_be_visible(timeout=10000)
 
     def test_toggle_shows_checkmark(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "체크 표시 테스트")
 
-        page.locator(".toggle").first.click()
-        page.wait_for_function("document.querySelectorAll('.toggle.done').length > 0")
+        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
+            page.locator(".toggle").first.click()
 
-        expect(page.locator(".toggle.done").first).to_be_visible()
+        expect(page.locator(".toggle.done").first).to_be_visible(timeout=10000)
 
     def test_toggle_twice_uncompletes(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "두 번 토글")
 
-        page.locator(".toggle").first.click()
-        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length > 0")
+        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
+            page.locator(".toggle").first.click()
+        expect(page.locator(".todo-card.completed").first).to_be_visible(timeout=10000)
 
-        page.locator(".toggle").first.click()
-        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length === 0")
-
-        expect(page.locator(".todo-card").first).not_to_have_class("completed")
+        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
+            page.locator(".toggle").first.click()
+        expect(page.locator(".todo-card.completed")).to_have_count(0, timeout=10000)
 
     def test_completed_todo_has_strikethrough_title(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "취소선 테스트")
 
-        page.locator(".toggle").first.click()
-        page.wait_for_function("document.querySelectorAll('.todo-card.completed').length > 0")
+        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
+            page.locator(".toggle").first.click()
+        expect(page.locator(".todo-card.completed").first).to_be_visible(timeout=10000)
 
         title_el = page.locator(".todo-card.completed .todo-title").first
         text_decoration = title_el.evaluate("el => getComputedStyle(el).textDecoration")
