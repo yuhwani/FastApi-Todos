@@ -732,7 +732,7 @@
 
         function badgeLabel(status, startDate, endDate) {
             const fmt = d => d ? d.replace(/-/g, '.') : '';
-            if (status === 'no-date') {
+            if (status === 'no-date' || status === 'completed') {
                 return startDate ? `<span class="date-badge no-date">📅 ${fmt(startDate)} ~</span>` : '';
             }
             const range = startDate ? `${fmt(startDate)} ~ ${fmt(endDate)}` : `~ ${fmt(endDate)}`;
