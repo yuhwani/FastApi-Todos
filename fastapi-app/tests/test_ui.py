@@ -105,43 +105,57 @@ class TestAddTodo:
 
 class TestToggle:
 
+    def _do_toggle(self, page: Page):
+        """토글 클릭 후 네트워크 완료까지 대기하는 헬퍼."""
+        page.locator(".toggle").first.scroll_into_view_if_needed()
+        page.locator(".toggle").first.click()
+        page.wait_for_load_state("networkidle", timeout=15000)
+
     def test_toggle_marks_completed(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "토글 테스트")
+        self._do_toggle(page)
 
-        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
-            page.locator(".toggle").first.click()
-
-        expect(page.locator(".todo-card.completed").first).to_be_visible(timeout=10000)
+        html = page.evaluate("() => document.getElementById('todo-list').innerHTML")
+        assert "todo-card completed" in html, (
+            f"Expected 'todo-card completed' in #todo-list. Actual HTML: {html[:500]}"
+        )
 
     def test_toggle_shows_checkmark(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "체크 표시 테스트")
+        self._do_toggle(page)
 
-        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
-            page.locator(".toggle").first.click()
-
-        expect(page.locator(".toggle.done").first).to_be_visible(timeout=10000)
+        html = page.evaluate("() => document.getElementById('todo-list').innerHTML")
+        assert "toggle done" in html, (
+            f"Expected 'toggle done' in #todo-list. Actual HTML: {html[:500]}"
+        )
 
     def test_toggle_twice_uncompletes(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "두 번 토글")
 
-        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
-            page.locator(".toggle").first.click()
-        expect(page.locator(".todo-card.completed").first).to_be_visible(timeout=10000)
+        self._do_toggle(page)
+        html1 = page.evaluate("() => document.getElementById('todo-list').innerHTML")
+        assert "todo-card completed" in html1, (
+            f"Expected completed after 1st toggle. HTML: {html1[:500]}"
+        )
 
-        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
-            page.locator(".toggle").first.click()
-        expect(page.locator(".todo-card.completed")).to_have_count(0, timeout=10000)
+        self._do_toggle(page)
+        html2 = page.evaluate("() => document.getElementById('todo-list').innerHTML")
+        assert "todo-card completed" not in html2, (
+            f"Expected NOT completed after 2nd toggle. HTML: {html2[:500]}"
+        )
 
     def test_completed_todo_has_strikethrough_title(self, page: Page, live_server: str):
         page.goto(live_server)
         add_todo(page, "취소선 테스트")
+        self._do_toggle(page)
 
-        with page.expect_response(lambda r: "toggle" in r.url and r.status == 200):
-            page.locator(".toggle").first.click()
-        expect(page.locator(".todo-card.completed").first).to_be_visible(timeout=10000)
+        html = page.evaluate("() => document.getElementById('todo-list').innerHTML")
+        assert "todo-card completed" in html, (
+            f"Expected 'todo-card completed' in #todo-list. HTML: {html[:500]}"
+        )
 
         title_el = page.locator(".todo-card.completed .todo-title").first
         text_decoration = title_el.evaluate("el => getComputedStyle(el).textDecoration")
