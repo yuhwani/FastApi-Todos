@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 · Task Board</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f1a;
+            min-height: 100vh;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 380px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a3e;
+            border-radius: 16px;
+            padding: 36px 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 28px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0f0f1a;
+            border: 1px solid #2a2a3e;
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        input:focus {
+            border-color: #a78bfa;
+        }
+
+        button {
+            margin-top: 6px;
+            padding: 12px;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            color: #0f0f1a;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.15s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(167, 139, 250, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .hint {
+            margin-top: 24px;
+            padding: 12px 14px;
+            background: rgba(167, 139, 250, 0.08);
+            border: 1px dashed rgba(167, 139, 250, 0.3);
+            border-radius: 10px;
+            font-size: 13px;
+            color: #b8b8c8;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .hint strong {
+            color: #a78bfa;
+            font-weight: 700;
+        }
+
+        .error {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            color: #fca5a5;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>✦ Task Board</h1>
+        <p class="subtitle">로그인 후 이용해주세요</p>
+
+        <form method="POST" action="/login" autocomplete="off">
+            <input type="text" name="username" placeholder="아이디" required autofocus>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <button type="submit">로그인</button>
+        </form>
+
+        <div class="error" id="error">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+
+        <div class="hint">
+            아이디: <strong>admin</strong> &nbsp;/&nbsp; 비밀번호: <strong>admin</strong>
+        </div>
+    </div>
+
+    <script>
+        if (new URLSearchParams(location.search).get("error") === "1") {
+            document.getElementById("error").classList.add("show");
+        }
+    </script>
+</body>
+</html>

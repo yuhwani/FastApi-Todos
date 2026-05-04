@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTTPException, Form, Cookie
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from pydantic import BaseModel, Field
 from typing import Optional
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -13,6 +13,12 @@ Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TODO_FILE = os.path.join(BASE_DIR, "todo.json")
 TEMPLATE_FILE = os.path.join(BASE_DIR, "templates", "index.html")
+LOGIN_TEMPLATE = os.path.join(BASE_DIR, "templates", "login.html")
+
+ADMIN_USER = "admin"
+ADMIN_PASS = "admin"
+AUTH_COOKIE = "auth"
+AUTH_VALUE = "1"
 
 # 댓글 모델
 class CommentItem(BaseModel):
@@ -136,9 +142,36 @@ def toggle_todo(todo_id: int) -> dict:
             return todo
     raise HTTPException(status_code=404, detail="To-Do item not found")
 
-# HTML 파일 서빙
-@app.get("/", response_class=HTMLResponse, responses={404: {"description": "Template file not found"}})
-def read_root() -> HTMLResponse:
+# 로그인 페이지
+@app.get("/login", response_class=HTMLResponse, responses={404: {"description": "Login template not found"}})
+def login_page() -> HTMLResponse:
+    if not os.path.exists(LOGIN_TEMPLATE):
+        raise HTTPException(status_code=404, detail="Login template not found")
+    with open(LOGIN_TEMPLATE, "r", encoding="utf-8") as file:
+        content = file.read()
+    return HTMLResponse(content=content)
+
+# 로그인 처리
+@app.post("/login")
+def login_submit(username: str = Form(...), password: str = Form(...)) -> Response:
+    if username == ADMIN_USER and password == ADMIN_PASS:
+        resp = RedirectResponse(url="/", status_code=303)
+        resp.set_cookie(key=AUTH_COOKIE, value=AUTH_VALUE, httponly=True, max_age=60 * 60 * 8)
+        return resp
+    return RedirectResponse(url="/login?error=1", status_code=303)
+
+# 로그아웃
+@app.get("/logout")
+def logout() -> Response:
+    resp = RedirectResponse(url="/login", status_code=303)
+    resp.delete_cookie(AUTH_COOKIE)
+    return resp
+
+# HTML 파일 서빙 (로그인 필요)
+@app.get("/", responses={404: {"description": "Template file not found"}})
+def read_root(auth: Optional[str] = Cookie(default=None)) -> Response:
+    if auth != AUTH_VALUE:
+        return RedirectResponse(url="/login", status_code=303)
     if not os.path.exists(TEMPLATE_FILE):
         raise HTTPException(status_code=404, detail="Template file not found")
     with open(TEMPLATE_FILE, "r", encoding="utf-8") as file:

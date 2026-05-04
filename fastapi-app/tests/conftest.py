@@ -64,3 +64,23 @@ def reset_todos(live_server):
     app_module.save_todos([])
     yield
     app_module.save_todos([])
+
+
+@pytest.fixture(autouse=True)
+def auto_login(request, live_server):
+    """UI 테스트(page fixture 사용 시) 자동 로그인 쿠키 주입.
+
+    /가 로그인 게이트로 보호되므로, 모든 Playwright 테스트가 시작되기 전에
+    auth 쿠키를 컨텍스트에 미리 넣어 실제 로그인 단계를 우회한다.
+    """
+    if "page" not in request.fixturenames:
+        yield
+        return
+
+    page = request.getfixturevalue("page")
+    page.context.add_cookies([{
+        "name": "auth",
+        "value": "1",
+        "url": live_server,
+    }])
+    yield
