@@ -6,3 +6,5 @@ httpx
 pytest-cov
 pytest-playwright
 playwright
+prometheus-fastapi-instrumentator
+prometheus-client

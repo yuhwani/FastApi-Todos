@@ -2,10 +2,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 from typing import Optional
+from prometheus_fastapi_instrumentator import Instrumentator
 import json
 import os
 
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TODO_FILE = os.path.join(BASE_DIR, "todo.json")
