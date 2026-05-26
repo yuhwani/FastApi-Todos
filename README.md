@@ -18,6 +18,7 @@ FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / SonarQube / nod
 | **SonarQube** | http://163.239.77.65:9000 | `9000 → 9000` | 코드 품질 정적 분석 |
 | **node-exporter** | http://163.239.77.65:7100/metrics | `7100 → 9100` | 호스트 시스템 메트릭(CPU, 메모리, 디스크) |
 | **cAdvisor** | http://163.239.77.65:7080 | `7080 → 8080` | 컨테이너 메트릭 (CPU·메모리·네트워크) |
+| **InfluxDB** | http://163.239.77.65:8086 | `8086 → 8086` | JMeter 부하 테스트 결과 시계열 저장소 (DB명: `jmeter`) |
 | **JMeter** | (포트 노출 없음) | — | 비대화형(`-n`) 부하 테스트, compose 기동 시 자동 실행 |
 
 ## 컨테이너 내부 통신 (compose 네트워크 안)
@@ -30,7 +31,9 @@ FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / SonarQube / nod
 | Prometheus → node-exporter | `http://node-exporter:9100/metrics` |
 | Prometheus → cAdvisor | `http://cadvisor:8080/metrics` |
 | Grafana → Prometheus (데이터소스) | `http://prometheus:9090` |
+| Grafana → InfluxDB (데이터소스) | `http://influxdb:8086` |
 | JMeter → FastAPI | `http://fastapi-app:8000` |
+| JMeter Backend Listener → InfluxDB | `http://influxdb:8086/write?db=jmeter` |
 
 ## Prometheus 스크랩 대상
 
@@ -50,6 +53,19 @@ FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / SonarQube / nod
 - **결과 파일** (compose 기동 후 `./jmeter/` 디렉토리에 생성):
   - `results.jtl` — 원본 측정 로그 (CSV)
   - `report/index.html` — JMeter HTML 리포트
+- **실시간 메트릭**: BackendListener가 InfluxDB(`http://influxdb:8086/write?db=jmeter`)로 전송 → Grafana 대시보드에서 실시간 시각화
+
+## InfluxDB 데이터 확인
+
+```bash
+# 컨테이너 안에 들어가서 influx CLI 실행
+docker exec -it influxdb influx -database jmeter
+
+# 안에서 측정값 확인
+> SHOW MEASUREMENTS
+> SELECT * FROM jmeter LIMIT 10
+> exit
+```
 
 JMeter는 compose가 올라올 때 1회 실행되고 종료됩니다. 다시 돌리려면:
 ```bash
@@ -92,15 +108,30 @@ docker compose restart prometheus
 ## 방화벽 인바운드 허용 포트
 
 ```
-5002, 7070, 3000, 9000, 7100, 7080
+5002, 7070, 3000, 9000, 7100, 7080, 8086
 ```
 
 ## Grafana 초기 설정
 
+### 1) Prometheus 데이터소스 등록
 1. http://163.239.77.65:3000 접속 → `admin` / `admin` 로그인
 2. **Connections → Data sources → Add data source → Prometheus** 선택
 3. URL: **`http://prometheus:9090`** (컨테이너 내부 통신이므로 호스트 IP가 아님)
 4. **Save & Test** → `Successfully queried the Prometheus API`
+
+### 2) InfluxDB 데이터소스 등록 (JMeter 시각화용)
+1. **Connections → Data sources → Add data source → InfluxDB** 선택
+2. Query Language: **InfluxQL** (InfluxDB 1.8 기본값)
+3. URL: **`http://influxdb:8086`**
+4. InfluxDB Details → **Database**: `jmeter`
+5. Auth 옵션은 모두 끔 (compose에서 `INFLUXDB_HTTP_AUTH_ENABLED=false`)
+6. **Save & Test** → `datasource is working`
+
+### 3) JMeter 대시보드 임포트
+1. **Dashboards → New → Import**
+2. **Import via grafana.com**: ID `5496` 입력 → Load
+3. 데이터소스로 InfluxDB 선택 → **Import**
+4. 부하 테스트 실행 중·후에 응답시간·TPS·에러율 그래프가 실시간 표시됨
 
 ## 디렉토리 구조
 

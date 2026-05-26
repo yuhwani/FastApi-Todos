@@ -101,12 +101,26 @@ services:
     networks:
       - loadtest-net
 
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=jmeter                  # 기동 시 'jmeter' DB 자동 생성
+      - INFLUXDB_HTTP_AUTH_ENABLED=false    # 내부망 데모용 (운영은 인증 필수)
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    networks:
+      - loadtest-net
+
 volumes:
   sonarqube_conf:
   sonarqube_data:
   sonarqube_logs:
   sonarqube_extensions:
   grafana-data:
+  influxdb-data:
 
 networks:
   loadtest-net:
