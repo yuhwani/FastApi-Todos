@@ -1,14 +1,47 @@
-from fastapi import FastAPI, HTTPException, Form, Cookie
+from fastapi import FastAPI, HTTPException, Form, Cookie, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from pydantic import BaseModel, Field
 from typing import Optional
 from prometheus_fastapi_instrumentator import Instrumentator
+from logging_loki import LokiQueueHandler
+from multiprocessing import Queue
 import json
 import os
+import logging
+import time
 
 app = FastAPI()
 
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+# Loki 로그 핸들러 설정 (LOKI_ENDPOINT 환경변수로 주입)
+loki_url = os.getenv("LOKI_ENDPOINT", "http://loki:3100/loki/api/v1/push")
+loki_logs_handler = LokiQueueHandler(
+    Queue(-1),
+    url=loki_url,
+    tags={"application": "fastapi-app"},
+    version="1",
+)
+
+# 커스텀 액세스 로거
+access_logger = logging.getLogger("custom.access")
+access_logger.setLevel(logging.INFO)
+access_logger.addHandler(loki_logs_handler)
+
+# HTTP 요청 로깅 미들웨어
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    duration = time.time() - start_time
+
+    client_host = request.client.host if request.client else "-"
+    log_message = (
+        f'{client_host} - "{request.method} {request.url.path} HTTP/1.1" '
+        f'{response.status_code} {duration:.3f}s'
+    )
+    access_logger.info(log_message)
+    return response
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TODO_FILE = os.path.join(BASE_DIR, "todo.json")
