@@ -32,11 +32,116 @@
             align-items: center;
             justify-content: center;
             padding: 24px;
+            overflow: hidden;
         }
 
+        /* ── CRT 스캔라인 오버레이 ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0,
+                transparent 2px,
+                rgba(163, 184, 108, 0.035) 2px,
+                rgba(163, 184, 108, 0.035) 3px
+            );
+            z-index: 1000;
+        }
+
+        /* ── 부팅 시퀀스 오버레이 ── */
+        .boot-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            gap: 16px;
+            animation: bootFade 0.5s 1.7s forwards;
+        }
+
+        @keyframes bootFade {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        .boot-stamp {
+            font-size: 9px;
+            color: var(--danger);
+            letter-spacing: 6px;
+            font-weight: 800;
+            border: 1px solid var(--danger);
+            padding: 3px 12px;
+            opacity: 0;
+            animation: stampIn 0.3s 0.1s forwards;
+        }
+
+        @keyframes stampIn {
+            from { opacity: 0; transform: scale(1.5); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .boot-text {
+            font-size: 14px;
+            color: var(--accent);
+            letter-spacing: 4px;
+            font-weight: 800;
+            text-shadow: 0 0 16px rgba(163, 184, 108, 0.6);
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typewriter 1.1s 0.4s steps(30) forwards;
+            border-right: 8px solid var(--accent);
+        }
+
+        @keyframes typewriter {
+            to { width: 30ch; }
+        }
+
+        .boot-cursor {
+            display: inline-block;
+            animation: blink 0.5s steps(2) infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .boot-progress {
+            font-size: 10px;
+            color: var(--text-mute);
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: progressIn 0.3s 1.5s forwards;
+        }
+
+        @keyframes progressIn {
+            to { opacity: 1; }
+        }
+
+        /* ── 메인 콘텐츠 등장 애니메이션 ── */
         .auth-frame {
             width: 100%;
             max-width: 420px;
+            opacity: 0;
+            animation: contentReveal 0.8s 2.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes contentReveal {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
         }
 
         .classified-bar {
@@ -48,6 +153,12 @@
             text-align: center;
             padding: 4px 0;
             border: 2px solid var(--danger);
+            animation: warningPulse 2.5s ease-in-out 3s infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(176, 77, 44, 0); }
+            50%      { box-shadow: 0 0 24px rgba(176, 77, 44, 0.45); }
         }
 
         .login-card {
@@ -84,6 +195,12 @@
             text-align: center;
             margin-bottom: 4px;
             text-shadow: 0 0 12px rgba(163, 184, 108, 0.3);
+            animation: titleGlow 2.8s ease-in-out 3s infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 12px rgba(163, 184, 108, 0.3); }
+            50%      { text-shadow: 0 0 28px rgba(163, 184, 108, 0.65), 0 0 8px rgba(163, 184, 108, 0.4); }
         }
 
         .subtitle {
@@ -130,15 +247,19 @@
             font-size: 13px;
             color: var(--text);
             outline: none;
-            transition: border-color 0.15s;
+            transition: border-color 0.15s, box-shadow 0.15s;
         }
 
         input::placeholder { color: var(--text-mute); }
-        input:focus { border-color: var(--accent); }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(163, 184, 108, 0.15);
+        }
 
         button[type="submit"] {
             margin-top: 8px;
-            padding: 12px;
+            padding: 12px 16px;
             background: var(--accent);
             color: #11140c;
             border: 2px solid var(--accent);
@@ -149,12 +270,29 @@
             transition: all 0.15s;
             text-transform: uppercase;
             letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .gun-icon {
+            flex-shrink: 0;
+            transition: transform 0.15s;
         }
 
         button[type="submit"]:hover {
             background: transparent;
             color: var(--accent);
             box-shadow: inset 0 0 0 2px var(--accent);
+        }
+
+        button[type="submit"]:hover .gun-icon {
+            transform: translateX(3px);
+        }
+
+        button[type="submit"]:active .gun-icon {
+            transform: translateX(6px) rotate(-3deg);
         }
 
         .hint {
@@ -212,6 +350,14 @@
     </style>
 </head>
 <body>
+
+    <!-- 부팅 시퀀스 오버레이 (1.7초 후 사라짐) -->
+    <div class="boot-screen">
+        <div class="boot-stamp">// SECURE LINK ESTABLISHED //</div>
+        <div class="boot-text">INITIALIZING TERMINAL<span class="boot-cursor">_</span></div>
+        <div class="boot-progress">DECRYPTION ◆ AUTH PROTOCOL ◆ READY</div>
+    </div>
+
     <div class="auth-frame">
         <div class="classified-bar">// RESTRICTED ACCESS // AUTHORIZED PERSONNEL ONLY //</div>
 
@@ -229,7 +375,22 @@
                     <label class="field-label">▶ ACCESS CODE / 비밀번호</label>
                     <input type="password" name="password" placeholder="ENTER PASSCODE" required>
                 </div>
-                <button type="submit">▶ MISSION START / 임무 시작</button>
+                <button type="submit">
+                    <!-- 권총 아이콘 (총구가 오른쪽을 향함) -->
+                    <svg class="gun-icon" width="24" height="14" viewBox="0 0 24 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <!-- 총열 (Slide) -->
+                        <rect x="0" y="4" width="18" height="3"/>
+                        <!-- 가늠쇠 (Front sight) -->
+                        <rect x="14" y="3" width="2" height="1"/>
+                        <!-- 공이치기 (Hammer) -->
+                        <rect x="18" y="2" width="2" height="3"/>
+                        <!-- 방아쇠울 (Trigger guard) -->
+                        <rect x="8" y="7" width="4" height="2"/>
+                        <!-- 손잡이 (Grip) -->
+                        <polygon points="12,7 18,7 16,14 10,14"/>
+                    </svg>
+                    MISSION START / 임무 시작
+                </button>
             </form>
 
             <div class="error" id="error">▶ ACCESS DENIED / 신원 확인 실패</div>
