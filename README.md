@@ -1,6 +1,6 @@
 # FastAPI Todo + 모니터링 + 부하 테스트 스택
 
-FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / SonarQube / node-exporter / cAdvisor 모니터링 스택, 그리고 JMeter 부하 테스트 환경입니다.
+FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / Loki / SonarQube / node-exporter / cAdvisor / InfluxDB 모니터링 스택, 그리고 JMeter 부하 테스트 환경입니다.
 
 ## 서버 정보
 
@@ -19,6 +19,7 @@ FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / SonarQube / nod
 | **node-exporter** | http://163.239.77.65:7100/metrics | `7100 → 9100` | 호스트 시스템 메트릭(CPU, 메모리, 디스크) |
 | **cAdvisor** | http://163.239.77.65:7080 | `7080 → 8080` | 컨테이너 메트릭 (CPU·메모리·네트워크) |
 | **InfluxDB** | http://163.239.77.65:8086 | `8086 → 8086` | JMeter 부하 테스트 결과 시계열 저장소 (DB명: `jmeter`) |
+| **Loki** | http://163.239.77.65:3100 | `3100 → 3100` | FastAPI 액세스 로그 집계 (HTTP API) |
 | **JMeter** | (포트 노출 없음) | — | 비대화형(`-n`) 부하 테스트, compose 기동 시 자동 실행 |
 
 ## 컨테이너 내부 통신 (compose 네트워크 안)
@@ -32,6 +33,8 @@ FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / SonarQube / nod
 | Prometheus → cAdvisor | `http://cadvisor:8080/metrics` |
 | Grafana → Prometheus (데이터소스) | `http://prometheus:9090` |
 | Grafana → InfluxDB (데이터소스) | `http://influxdb:8086` |
+| Grafana → Loki (데이터소스) | `http://loki:3100` |
+| FastAPI → Loki (로그 push) | `http://loki:3100/loki/api/v1/push` (환경변수 `LOKI_ENDPOINT`) |
 | JMeter → FastAPI | `http://fastapi-app:8000` |
 | JMeter Backend Listener → InfluxDB | `http://influxdb:8086/write?db=jmeter` |
 
@@ -65,6 +68,27 @@ docker exec -it influxdb influx -database jmeter
 > SHOW MEASUREMENTS
 > SELECT * FROM jmeter LIMIT 10
 > exit
+```
+
+## Loki 로그 수집
+
+FastAPI 모든 HTTP 요청을 미들웨어가 가로채서 Loki로 전송합니다.
+
+- **로그 포맷**: `<client_ip> - "METHOD PATH HTTP/1.1" STATUS DURATION`
+- **라벨**: `application="fastapi-app"`
+- **로거**: `custom.access`
+
+직접 쿼리해서 확인:
+```bash
+# 5분 내 로그 조회
+curl -G "http://163.239.77.65:3100/loki/api/v1/query_range" \
+  --data-urlencode 'query={application="fastapi-app"}' \
+  --data-urlencode "start=$(date -d '5 min ago' +%s)000000000" \
+  --data-urlencode "end=$(date +%s)000000000" | python3 -m json.tool | head -30
+
+# Loki 상태 확인
+curl http://163.239.77.65:3100/ready
+curl http://163.239.77.65:3100/metrics
 ```
 
 JMeter는 compose가 올라올 때 1회 실행되고 종료됩니다. 다시 돌리려면:
@@ -108,7 +132,7 @@ docker compose restart prometheus
 ## 방화벽 인바운드 허용 포트
 
 ```
-5002, 7070, 3000, 9000, 7100, 7080, 8086
+5002, 7070, 3000, 9000, 7100, 7080, 8086, 3100
 ```
 
 ## Grafana 초기 설정
@@ -132,6 +156,16 @@ docker compose restart prometheus
 2. **Import via grafana.com**: ID `5496` 입력 → Load
 3. 데이터소스로 InfluxDB 선택 → **Import**
 4. 부하 테스트 실행 중·후에 응답시간·TPS·에러율 그래프가 실시간 표시됨
+
+### 4) Loki 데이터소스 등록 (로그 시각화)
+1. **Connections → Data sources → Add data source → Loki** 선택
+2. URL: **`http://loki:3100`** (호스트 IP 아님)
+3. **Save & Test** → `Data source successfully connected`
+4. 좌측 **Explore** 메뉴 → 데이터소스 `Loki` 선택 → 쿼리 입력:
+   ```
+   {application="fastapi-app"}
+   ```
+   → FastAPI 요청 로그가 실시간으로 표시됨
 
 ## 디렉토리 구조
 
