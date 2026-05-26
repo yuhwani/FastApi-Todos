@@ -3,144 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 · Task Board</title>
+    <title>OPS COMMAND - Authentication</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        :root {
+            --bg-deep:   #11140c;
+            --bg-base:   #1a1d14;
+            --bg-card:   #262b1d;
+            --bg-input:  #11140c;
+            --border:    #4a5320;
+            --border-hi: #8a9550;
+            --text:      #d4dcb0;
+            --text-dim:  #8a9265;
+            --text-mute: #565c3e;
+            --accent:    #a3b86c;
+            --danger:    #b04d2c;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f0f1a;
+            font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+            background:
+                repeating-linear-gradient(0deg, transparent 0, transparent 24px, rgba(74,83,32,0.05) 24px, rgba(74,83,32,0.05) 25px),
+                radial-gradient(ellipse at center, #1a1d14 0%, #0d0f08 100%);
             min-height: 100vh;
-            color: #e0e0e0;
+            color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 24px;
         }
 
-        .login-card {
+        .auth-frame {
             width: 100%;
-            max-width: 380px;
-            background: #1a1a2e;
-            border: 1px solid #2a2a3e;
-            border-radius: 16px;
-            padding: 36px 28px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            max-width: 420px;
+        }
+
+        .classified-bar {
+            background: var(--danger);
+            color: #1a1d14;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-align: center;
+            padding: 4px 0;
+            border: 2px solid var(--danger);
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-top: none;
+            padding: 32px 28px;
+            position: relative;
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .stencil-top {
+            font-size: 9px;
+            color: var(--text-mute);
+            letter-spacing: 5px;
+            text-align: center;
+            margin-bottom: 8px;
         }
 
         h1 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 800;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--accent);
+            letter-spacing: 4px;
             text-align: center;
-            margin-bottom: 6px;
-            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 12px rgba(163, 184, 108, 0.3);
         }
 
         .subtitle {
             text-align: center;
-            font-size: 13px;
-            color: #777;
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
             margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .subtitle::before { content: '── '; }
+        .subtitle::after  { content: ' ──'; }
+
+        .field-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
-        input {
+        .field-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
-            padding: 12px 14px;
-            background: #0f0f1a;
-            border: 1px solid #2a2a3e;
-            border-radius: 10px;
-            color: #e0e0e0;
-            font-size: 14px;
+            padding: 11px 14px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text);
             outline: none;
             transition: border-color 0.15s;
         }
 
-        input:focus {
-            border-color: #a78bfa;
-        }
+        input::placeholder { color: var(--text-mute); }
+        input:focus { border-color: var(--accent); }
 
-        button {
-            margin-top: 6px;
+        button[type="submit"] {
+            margin-top: 8px;
             padding: 12px;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            color: #0f0f1a;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
+            background: var(--accent);
+            color: #11140c;
+            border: 2px solid var(--accent);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.15s;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
 
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(167, 139, 250, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
+        button[type="submit"]:hover {
+            background: transparent;
+            color: var(--accent);
+            box-shadow: inset 0 0 0 2px var(--accent);
         }
 
         .hint {
-            margin-top: 24px;
+            margin-top: 20px;
             padding: 12px 14px;
-            background: rgba(167, 139, 250, 0.08);
-            border: 1px dashed rgba(167, 139, 250, 0.3);
-            border-radius: 10px;
-            font-size: 13px;
-            color: #b8b8c8;
+            background: var(--bg-input);
+            border: 1.5px dashed var(--border-hi);
+            font-size: 11px;
+            color: var(--text-dim);
             text-align: center;
             line-height: 1.6;
+            letter-spacing: 1px;
+        }
+
+        .hint::before {
+            content: '[ STANDARD CREDENTIALS ]';
+            display: block;
+            font-size: 9px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            font-weight: 800;
         }
 
         .hint strong {
-            color: #a78bfa;
-            font-weight: 700;
+            color: var(--accent);
+            font-weight: 800;
+            background: rgba(163, 184, 108, 0.15);
+            padding: 1px 6px;
         }
 
         .error {
             margin-top: 12px;
             padding: 10px 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 10px;
-            color: #fca5a5;
-            font-size: 13px;
+            background: rgba(176, 77, 44, 0.15);
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
+            font-size: 11px;
             text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
             display: none;
         }
 
-        .error.show {
-            display: block;
+        .error.show { display: block; }
+
+        .footer-bar {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 9px;
+            color: var(--text-mute);
+            letter-spacing: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h1>✦ Task Board</h1>
-        <p class="subtitle">로그인 후 이용해주세요</p>
+    <div class="auth-frame">
+        <div class="classified-bar">// RESTRICTED ACCESS // AUTHORIZED PERSONNEL ONLY //</div>
 
-        <form method="POST" action="/login" autocomplete="off">
-            <input type="text" name="username" placeholder="아이디" required autofocus>
-            <input type="password" name="password" placeholder="비밀번호" required>
-            <button type="submit">로그인</button>
-        </form>
+        <div class="login-card">
+            <div class="stencil-top">[ AUTHENTICATION TERMINAL ]</div>
+            <h1>✦ TASK BOARD</h1>
+            <div class="subtitle">SECURE LOGIN / 인증 필요</div>
 
-        <div class="error" id="error">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+            <form method="POST" action="/login" autocomplete="off">
+                <div class="field-group">
+                    <label class="field-label">▶ OPERATIVE ID / 아이디</label>
+                    <input type="text" name="username" placeholder="ENTER ID" required autofocus>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">▶ ACCESS CODE / 비밀번호</label>
+                    <input type="password" name="password" placeholder="ENTER PASSCODE" required>
+                </div>
+                <button type="submit">▶ AUTHENTICATE / 로그인</button>
+            </form>
 
-        <div class="hint">
-            아이디: <strong>admin</strong> &nbsp;/&nbsp; 비밀번호: <strong>admin</strong>
+            <div class="error" id="error">▶ INVALID CREDENTIALS / 인증 실패</div>
+
+            <div class="hint">
+                ID: <strong>admin</strong> &nbsp; / &nbsp; PW: <strong>admin</strong>
+            </div>
         </div>
+
+        <div class="footer-bar">── SYSTEM v1.0 // OPS COMMAND ──</div>
     </div>
 
     <script>

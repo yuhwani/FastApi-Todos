@@ -3,276 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>OPS COMMAND - Task Board</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        :root {
+            --bg-deep:    #11140c;
+            --bg-base:    #1a1d14;
+            --bg-card:    #262b1d;
+            --bg-input:   #11140c;
+            --border:     #4a5320;
+            --border-hi:  #8a9550;
+            --text:       #d4dcb0;
+            --text-dim:   #8a9265;
+            --text-mute:  #565c3e;
+            --accent:     #a3b86c;
+            --danger:     #b04d2c;
+            --warning:    #c19432;
+            --success:    #6e8a32;
+            --info:       #5e8186;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f0f1a;
+            font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+            background:
+                repeating-linear-gradient(0deg, transparent 0, transparent 24px, rgba(74,83,32,0.04) 24px, rgba(74,83,32,0.04) 25px),
+                var(--bg-base);
             min-height: 100vh;
-            color: #e0e0e0;
-            padding: 40px 16px;
+            color: var(--text);
+            padding: 32px 16px;
+            line-height: 1.4;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 880px;
             margin: 0 auto;
         }
 
-        /* 헤더 */
-        .header {
+        /* ── 군대식 헤더 ── */
+        .classified-bar {
+            background: var(--danger);
+            color: #1a1d14;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 4px;
             text-align: center;
-            margin-bottom: 36px;
+            padding: 4px 0;
+            border: 2px solid var(--danger);
+            margin-bottom: 0;
+        }
+
+        .header {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-top: none;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header .stencil {
+            font-size: 10px;
+            color: var(--text-mute);
+            letter-spacing: 6px;
+            margin-bottom: 4px;
         }
 
         .header h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -1px;
+            color: var(--accent);
+            letter-spacing: 3px;
             margin-bottom: 6px;
+            text-shadow: 0 0 12px rgba(163, 184, 108, 0.3);
         }
 
-        .header p {
-            font-size: 14px;
-            color: #555;
+        .header .sub {
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        /* 통계 배지 */
+        .header .sub::before { content: '── '; }
+        .header .sub::after  { content: ' ──'; }
+
+        /* ── 상태 패널 ── */
         .stats {
-            display: flex;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             margin-bottom: 24px;
-            justify-content: center;
         }
 
         .stat-badge {
-            background: #1a1a2e;
-            border: 1px solid #2a2a40;
-            border-radius: 12px;
-            padding: 10px 20px;
-            text-align: center;
-            flex: 1;
-            max-width: 140px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 12px 14px;
         }
 
         .stat-badge .num {
-            font-size: 22px;
-            font-weight: 700;
-            color: #a78bfa;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: inherit;
         }
 
         .stat-badge .label {
-            font-size: 11px;
-            color: #666;
+            font-size: 10px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
             margin-top: 2px;
         }
 
-        /* 입력 폼 */
+        /* ── 임무 등록 폼 ── */
         .form-card {
-            background: #1a1a2e;
-            border: 1px solid #2a2a40;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-card::before {
+            content: 'CLASSIFIED // FOR OFFICIAL USE';
+            position: absolute;
+            top: -1px;
+            right: 12px;
+            font-size: 8px;
+            color: var(--text-mute);
+            background: var(--bg-card);
+            padding: 0 6px;
+            letter-spacing: 1.5px;
         }
 
         .form-card .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #a78bfa;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 8px;
         }
 
         .form-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
+            margin-bottom: 10px;
         }
 
-        .form-card input[type="text"] {
+        .form-card input[type="text"],
+        .form-card input[type="date"] {
             flex: 1;
             min-width: 120px;
-            padding: 11px 16px;
-            background: #0f0f1a;
-            border: 1.5px solid #2a2a40;
-            border-radius: 12px;
-            font-size: 14px;
-            color: #e0e0e0;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .form-card input[type="text"]::placeholder { color: #444; }
-        .form-card input[type="text"]:focus { border-color: #a78bfa; }
-
-        .date-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .date-label {
-            font-size: 12px;
-            color: #555;
-            white-space: nowrap;
-        }
-
-        .date-row input[type="date"] {
-            flex: 1;
-            min-width: 140px;
-            padding: 10px 14px;
-            background: #0f0f1a;
-            border: 1.5px solid #2a2a40;
-            border-radius: 12px;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            font-family: inherit;
             font-size: 13px;
-            color: #e0e0e0;
+            color: var(--text);
             outline: none;
-            cursor: pointer;
-            transition: border-color 0.2s;
+            transition: border-color 0.15s;
             color-scheme: dark;
         }
 
-        .date-row input[type="date"]:focus { border-color: #a78bfa; }
+        .form-card input::placeholder { color: var(--text-mute); }
+        .form-card input:focus { border-color: var(--accent); }
 
-        .date-separator { font-size: 13px; color: #444; }
-
-        .btn-add {
-            padding: 11px 24px;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-            align-self: flex-end;
-            letter-spacing: 0.3px;
-        }
-
-        .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
-        .btn-add:active { transform: translateY(0); }
-
-        /* 필터 탭 */
-        .filter-tabs {
+        .date-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .date-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .date-separator { color: var(--text-mute); font-weight: bold; }
+
+        .btn-add {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: #11140c;
+            border: 2px solid var(--accent);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-transform: uppercase;
+        }
+
+        .btn-add:hover {
+            background: transparent;
+            color: var(--accent);
+            box-shadow: inset 0 0 0 2px var(--accent);
+        }
+
+        /* ── 필터 탭 ── */
+        .filter-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
         }
 
         .tab {
-            padding: 7px 16px;
-            border-radius: 20px;
-            border: 1.5px solid #2a2a40;
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-right: 1px solid var(--border);
             background: transparent;
-            color: #555;
-            font-size: 13px;
-            font-weight: 600;
+            color: var(--text-dim);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
+
+        .tab:last-child { border-right: none; }
+        .tab:hover { color: var(--text); background: rgba(163, 184, 108, 0.05); }
 
         .tab.active {
-            background: #a78bfa20;
-            border-color: #a78bfa;
-            color: #a78bfa;
+            background: var(--accent);
+            color: #11140c;
+            font-weight: 800;
         }
 
-        /* Todo 카드 */
+        /* ── 임무 카드 ── */
         .todo-card {
-            background: #1a1a2e;
-            border: 1px solid #2a2a40;
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-            transition: transform 0.15s, box-shadow 0.15s;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-left: 5px solid var(--text-mute);
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            transition: border-color 0.15s, background 0.15s;
             position: relative;
-            overflow: hidden;
         }
 
-        .todo-card::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 4px;
-            background: #2a2a40;
-            border-radius: 4px 0 0 4px;
+        .todo-card:hover {
+            border-color: var(--border-hi);
+            background: #2d3322;
         }
 
-        .todo-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-        .todo-card.completed { opacity: 0.45; }
-        .todo-card.completed::before { background: #333; }
-        .todo-card.overdue::before   { background: #e74c3c; }
-        .todo-card.due-today::before { background: #f39c12; }
-        .todo-card.on-track::before  { background: #2ecc71; }
+        .todo-card.completed { opacity: 0.45; border-left-color: var(--text-mute); }
+        .todo-card.overdue   { border-left-color: var(--danger); }
+        .todo-card.due-today { border-left-color: var(--warning); }
+        .todo-card.on-track  { border-left-color: var(--success); }
 
         .todo-header {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
+            gap: 12px;
         }
 
+        /* 체크박스(군용 표적 스타일) */
         .toggle {
             width: 22px;
             height: 22px;
             min-width: 22px;
-            border-radius: 50%;
-            border: 2px solid #3a3a5c;
-            background: transparent;
+            border-radius: 0;
+            border: 2px solid var(--border-hi);
+            background: var(--bg-input);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 2px;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            position: relative;
         }
 
-        .toggle:hover { border-color: #a78bfa; }
+        .toggle:hover { border-color: var(--accent); }
 
         .toggle.done {
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            border-color: transparent;
+            background: var(--accent);
+            border-color: var(--accent);
         }
 
         .toggle.done::after {
-            content: '';
-            width: 6px;
-            height: 10px;
-            border: 2px solid #fff;
-            border-top: none;
-            border-left: none;
-            transform: rotate(45deg) translateY(-1px);
+            content: '✓';
+            color: #11140c;
+            font-weight: 900;
+            font-size: 14px;
         }
 
         .todo-text { flex: 1; min-width: 0; }
 
         .todo-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #e0e0e0;
-            margin-bottom: 3px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
         }
 
         .todo-card.completed .todo-title {
             text-decoration: line-through;
-            color: #444;
+            color: var(--text-mute);
         }
 
         .todo-desc {
-            font-size: 13px;
-            color: #555;
+            font-size: 12px;
+            color: var(--text-dim);
             margin-bottom: 8px;
         }
 
@@ -280,16 +331,19 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid;
+            font-family: inherit;
         }
 
-        .date-badge.overdue   { background: #e74c3c20; color: #e74c3c; border: 1px solid #e74c3c40; }
-        .date-badge.due-today { background: #f39c1220; color: #f39c12; border: 1px solid #f39c1240; }
-        .date-badge.on-track  { background: #2ecc7120; color: #2ecc71; border: 1px solid #2ecc7140; }
-        .date-badge.no-date   { background: #ffffff08; color: #555;    border: 1px solid #2a2a40; }
+        .date-badge.overdue   { background: rgba(176,77,44,0.15);   color: var(--danger);  border-color: var(--danger); }
+        .date-badge.due-today { background: rgba(193,148,50,0.15);  color: var(--warning); border-color: var(--warning); }
+        .date-badge.on-track  { background: rgba(110,138,50,0.15);  color: var(--success); border-color: var(--success); }
+        .date-badge.no-date   { background: rgba(74,83,32,0.10);    color: var(--text-dim); border-color: var(--border); }
 
         .todo-actions {
             display: flex;
@@ -299,157 +353,182 @@
 
         .btn-icon {
             padding: 6px 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
+            border: 1.5px solid;
+            background: var(--bg-input);
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn-edit { background: #a78bfa20; color: #a78bfa; border: 1px solid #a78bfa30; }
-        .btn-edit:hover { background: #a78bfa35; }
-        .btn-del { background: #e74c3c18; color: #e74c3c; border: 1px solid #e74c3c30; }
-        .btn-del:hover { background: #e74c3c30; }
+        .btn-edit { color: var(--info);   border-color: var(--info); }
+        .btn-edit:hover { background: var(--info); color: #11140c; }
+        .btn-del { color: var(--danger); border-color: var(--danger); }
+        .btn-del:hover  { background: var(--danger); color: #11140c; }
 
-        /* 댓글 */
+        /* ── 통신/보고 (댓글) ── */
         .comments-section {
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid #1f1f35;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .comments-section::before {
+            content: '[ TRANSMISSION LOG ]';
+            font-size: 9px;
+            color: var(--text-mute);
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 6px;
         }
 
         .comment-item {
-            font-size: 13px;
-            color: #888;
-            padding: 6px 12px;
-            background: #0f0f1a;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            border: 1px solid #1f1f35;
+            font-size: 12px;
+            color: var(--text-dim);
+            padding: 6px 10px;
+            background: var(--bg-input);
+            border-left: 2px solid var(--info);
+            margin-bottom: 4px;
+            font-family: inherit;
         }
 
         .comment-form {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-top: 8px;
         }
 
         .comment-form input {
             flex: 1;
-            padding: 8px 12px;
-            background: #0f0f1a;
-            border: 1.5px solid #2a2a40;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #e0e0e0;
+            padding: 7px 10px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            font-family: inherit;
+            font-size: 12px;
+            color: var(--text);
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.15s;
         }
 
-        .comment-form input::placeholder { color: #444; }
-        .comment-form input:focus { border-color: #a78bfa; }
+        .comment-form input::placeholder { color: var(--text-mute); }
+        .comment-form input:focus { border-color: var(--accent); }
 
         .btn-comment {
-            padding: 8px 14px;
-            background: #a78bfa25;
-            color: #a78bfa;
-            border: 1px solid #a78bfa40;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 7px 14px;
+            background: transparent;
+            color: var(--info);
+            border: 1.5px solid var(--info);
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             white-space: nowrap;
         }
 
-        .btn-comment:hover { background: #a78bfa40; }
+        .btn-comment:hover { background: var(--info); color: #11140c; }
 
         .empty {
             text-align: center;
-            color: #333;
-            font-size: 14px;
-            padding: 48px 0;
+            color: var(--text-mute);
+            font-size: 12px;
+            padding: 40px 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border: 2px dashed var(--border);
+            background: var(--bg-card);
         }
 
-        /* ── 캘린더 ── */
-        .calendar-section {
-            margin-top: 40px;
-        }
+        /* ── 작전 캘린더 ── */
+        .calendar-section { margin-top: 40px; }
 
         .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
         }
 
         .section-header h2 {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
+
+        .section-header h2::before { content: '▌ '; color: var(--accent); }
 
         .cal-nav {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .cal-nav button {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
-            border: 1.5px solid #2a2a40;
-            background: #1a1a2e;
-            color: #a78bfa;
-            font-size: 16px;
+            border-radius: 0;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            color: var(--accent);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .cal-nav button:hover { background: #a78bfa20; border-color: #a78bfa; }
+        .cal-nav button:hover {
+            background: var(--accent);
+            color: #11140c;
+            border-color: var(--accent);
+        }
 
         .cal-nav .month-label {
-            font-size: 15px;
-            font-weight: 700;
-            color: #e0e0e0;
-            min-width: 110px;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text);
+            min-width: 130px;
             text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .calendar {
-            background: #1a1a2e;
-            border: 1px solid #2a2a40;
-            border-radius: 20px;
-            overflow: hidden;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
         }
 
         .cal-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            background: #13132a;
-            border-bottom: 1px solid #2a2a40;
+            background: var(--bg-input);
+            border-bottom: 2px solid var(--border);
         }
 
         .cal-weekday {
             text-align: center;
-            padding: 12px 4px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #555;
+            padding: 10px 4px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-dim);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 2px;
         }
 
-        .cal-weekday:first-child { color: #e74c3c88; }
-        .cal-weekday:last-child  { color: #60a5fa88; }
+        .cal-weekday:first-child { color: var(--danger); }
+        .cal-weekday:last-child  { color: var(--info); }
 
         .cal-grid {
             display: grid;
@@ -457,119 +536,133 @@
         }
 
         .cal-day {
-            min-height: 90px;
-            padding: 8px;
-            border-right: 1px solid #1f1f35;
-            border-bottom: 1px solid #1f1f35;
+            min-height: 88px;
+            padding: 6px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
             position: relative;
             transition: background 0.15s;
         }
 
-        .cal-day:hover { background: #ffffff04; }
+        .cal-day:hover { background: rgba(163, 184, 108, 0.04); }
         .cal-day:nth-child(7n) { border-right: none; }
 
-        .cal-day.other-month .day-num { color: #2a2a3a; }
+        .cal-day.other-month .day-num { color: var(--text-mute); opacity: 0.4; }
 
         .cal-day.today {
-            background: #a78bfa0a;
+            background: rgba(163, 184, 108, 0.08);
+            box-shadow: inset 0 0 0 2px var(--accent);
         }
 
         .cal-day.today .day-num {
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
+            color: var(--accent);
+            font-weight: 900;
         }
 
         .day-num {
-            font-size: 13px;
-            font-weight: 600;
-            color: #555;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dim);
             margin-bottom: 4px;
             display: block;
         }
 
-        .cal-day:nth-child(7n+1) .day-num { color: #e74c3c66; }
-        .cal-day:nth-child(7n) .day-num   { color: #60a5fa66; }
+        .cal-day:nth-child(7n+1) .day-num { color: var(--danger); }
+        .cal-day:nth-child(7n) .day-num   { color: var(--info); }
 
         .cal-todo-chip {
             display: block;
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 9px;
+            font-weight: 700;
             padding: 2px 6px;
-            border-radius: 4px;
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: default;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: inherit;
         }
 
-        .cal-todo-chip.start  { background: #60a5fa20; color: #60a5fa; border-left: 2px solid #60a5fa; }
-        .cal-todo-chip.end    { background: #a78bfa20; color: #a78bfa; border-left: 2px solid #a78bfa; }
-        .cal-todo-chip.both   { background: #2ecc7120; color: #2ecc71; border-left: 2px solid #2ecc71; }
-        .cal-todo-chip.done   { background: #ffffff08; color: #444;    border-left: 2px solid #333; text-decoration: line-through; }
+        .cal-todo-chip.start { background: rgba(94, 129, 134, 0.2);  color: var(--info);    border-left: 3px solid var(--info); }
+        .cal-todo-chip.end   { background: rgba(193, 148, 50, 0.2);  color: var(--warning); border-left: 3px solid var(--warning); }
+        .cal-todo-chip.both  { background: rgba(110, 138, 50, 0.2);  color: var(--success); border-left: 3px solid var(--success); }
+        .cal-todo-chip.done  { background: rgba(74,83,32,0.10);      color: var(--text-mute); border-left: 3px solid var(--text-mute); text-decoration: line-through; }
 
-        /* 모달 */
+        /* ── 모달 (브리핑) ── */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.65);
+            background: rgba(0,0,0,0.75);
             z-index: 100;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(4px);
         }
 
         .modal-overlay.open { display: flex; }
 
         .modal {
-            background: #1a1a2e;
-            border: 1px solid #2a2a40;
-            border-radius: 20px;
-            padding: 28px;
-            width: 360px;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            padding: 24px;
+            width: 380px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
+            position: relative;
+            box-shadow: 0 0 32px rgba(163, 184, 108, 0.2);
+        }
+
+        .modal::before {
+            content: '◆ MISSION EDIT ◆';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-base);
+            padding: 0 12px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: var(--accent);
         }
 
         .modal h2 {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 10px;
         }
 
         .modal label {
-            font-size: 12px;
-            color: #555;
-            font-weight: 600;
+            font-size: 10px;
+            color: var(--text-dim);
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .modal input {
-            padding: 10px 14px;
-            background: #0f0f1a;
-            border: 1.5px solid #2a2a40;
-            border-radius: 10px;
-            font-size: 14px;
-            color: #e0e0e0;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text);
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.15s;
             color-scheme: dark;
         }
 
-        .modal input:focus { border-color: #a78bfa; }
+        .modal input:focus { border-color: var(--accent); }
 
         .modal-actions {
             display: flex;
@@ -579,95 +672,118 @@
         }
 
         .btn-cancel {
-            padding: 10px 20px;
-            background: #ffffff0a;
-            color: #555;
-            border: 1px solid #2a2a40;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-cancel:hover { background: #ffffff14; }
-
-        .btn-save {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 10px 18px;
+            background: var(--bg-input);
+            color: var(--text-dim);
+            border: 1.5px solid var(--border);
+            font-family: inherit;
+            font-size: 11px;
             font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn-save:hover { opacity: 0.88; }
+        .btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
 
-        /* 구분선 */
-        .divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #2a2a40, transparent);
-            margin: 8px 0 28px;
+        .btn-save {
+            padding: 10px 18px;
+            background: var(--accent);
+            color: #11140c;
+            border: 1.5px solid var(--accent);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+
+        .btn-save:hover { background: transparent; color: var(--accent); }
+
+        .divider { display: none; }
+
+        /* 로그아웃 링크 */
+        .logout-bar {
+            text-align: right;
+            margin-bottom: 12px;
+        }
+        .logout-bar a {
+            font-size: 10px;
+            color: var(--text-mute);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            transition: all 0.15s;
+        }
+        .logout-bar a:hover { color: var(--danger); border-color: var(--danger); }
     </style>
 </head>
 <body>
     <div class="container">
 
-        <!-- 헤더 -->
+        <!-- 로그아웃 -->
+        <div class="logout-bar">
+            <a href="/logout">▶ 로그아웃 / SIGN OUT</a>
+        </div>
+
+        <!-- 군대식 헤더 -->
+        <div class="classified-bar">// CLASSIFIED // OPERATIONS COMMAND //</div>
         <div class="header">
+            <div class="stencil">[ TASK FORCE COMMAND CENTER ]</div>
             <h1>✦ Task Board</h1>
-            <p id="today-label"></p>
+            <div class="sub" id="today-label"></div>
         </div>
 
-        <!-- 통계 -->
+        <!-- 작전 현황 -->
         <div class="stats">
-            <div class="stat-badge"><div class="num" id="stat-total">0</div><div class="label">전체</div></div>
-            <div class="stat-badge"><div class="num" id="stat-done">0</div><div class="label">완료</div></div>
-            <div class="stat-badge"><div class="num" id="stat-overdue">0</div><div class="label">기한초과</div></div>
-            <div class="stat-badge"><div class="num" id="stat-today">0</div><div class="label">오늘마감</div></div>
+            <div class="stat-badge"><div class="num" id="stat-total">0</div><div class="label">TOTAL OPS / 전체</div></div>
+            <div class="stat-badge"><div class="num" id="stat-done">0</div><div class="label">CLEARED / 완료</div></div>
+            <div class="stat-badge"><div class="num" id="stat-overdue">0</div><div class="label">OVERDUE / 기한초과</div></div>
+            <div class="stat-badge"><div class="num" id="stat-today">0</div><div class="label">DUE TODAY / 오늘마감</div></div>
         </div>
 
-        <!-- 입력 폼 -->
+        <!-- 임무 등록 -->
         <div class="form-card">
-            <div class="section-title">새 할 일 추가</div>
+            <div class="section-title">▶ NEW MISSION / 임무 등록</div>
             <div class="form-row">
-                <input type="text" id="title" placeholder="제목을 입력하세요" required>
-                <input type="text" id="description" placeholder="설명 (선택)">
+                <input type="text" id="title" placeholder="MISSION TITLE / 임무 제목" required>
+                <input type="text" id="description" placeholder="BRIEFING / 설명 (선택)">
             </div>
             <div class="date-row">
-                <span class="date-label">시작</span>
+                <span class="date-label">START / 개시</span>
                 <input type="date" id="start_date">
-                <span class="date-separator">~</span>
-                <span class="date-label">마감</span>
+                <span class="date-separator">≫</span>
+                <span class="date-label">END / 종료</span>
                 <input type="date" id="end_date">
             </div>
-            <button class="btn-add" onclick="addTodo()">+ 추가하기</button>
+            <button class="btn-add" onclick="addTodo()">▶ EXECUTE / 등록</button>
         </div>
 
         <!-- 필터 탭 -->
         <div class="filter-tabs">
-            <button class="tab active" onclick="setFilter('all', this)">전체</button>
-            <button class="tab" onclick="setFilter('active', this)">진행중</button>
-            <button class="tab" onclick="setFilter('done', this)">완료</button>
-            <button class="tab" onclick="setFilter('overdue', this)">기한초과</button>
+            <button class="tab active" onclick="setFilter('all', this)">ALL / 전체</button>
+            <button class="tab" onclick="setFilter('active', this)">ACTIVE / 진행중</button>
+            <button class="tab" onclick="setFilter('done', this)">CLEARED / 완료</button>
+            <button class="tab" onclick="setFilter('overdue', this)">OVERDUE / 기한초과</button>
         </div>
 
         <div id="todo-list"></div>
 
         <div class="divider"></div>
 
-        <!-- 캘린더 -->
+        <!-- 작전 캘린더 -->
         <div class="calendar-section">
             <div class="section-header">
-                <h2>📅 일정 캘린더</h2>
+                <h2>OPS SCHEDULE / 작전 일정</h2>
                 <div class="cal-nav">
-                    <button onclick="changeMonth(-1)">‹</button>
+                    <button onclick="changeMonth(-1)">◀</button>
                     <span class="month-label" id="month-label"></span>
-                    <button onclick="changeMonth(1)">›</button>
+                    <button onclick="changeMonth(1)">▶</button>
                 </div>
             </div>
             <div class="calendar">
@@ -688,14 +804,14 @@
     <!-- 수정 모달 -->
     <div class="modal-overlay" id="modal">
         <div class="modal">
-            <h2>할 일 수정</h2>
-            <label>제목 <input type="text" id="m-title"></label>
-            <label>설명 <input type="text" id="m-desc"></label>
-            <label>시작 날짜 <input type="date" id="m-start"></label>
-            <label>마감 날짜 <input type="date" id="m-end"></label>
+            <h2>MISSION EDIT / 임무 수정</h2>
+            <label>TITLE / 제목 <input type="text" id="m-title"></label>
+            <label>BRIEFING / 설명 <input type="text" id="m-desc"></label>
+            <label>START / 개시일 <input type="date" id="m-start"></label>
+            <label>END / 종료일 <input type="date" id="m-end"></label>
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal()">취소</button>
-                <button class="btn-save" onclick="saveEdit()">저장</button>
+                <button class="btn-cancel" onclick="closeModal()">ABORT / 취소</button>
+                <button class="btn-save" onclick="saveEdit()">CONFIRM / 저장</button>
             </div>
         </div>
     </div>
@@ -709,11 +825,9 @@
 
         const today = new Date().toISOString().slice(0, 10);
 
-        // 오늘 날짜 표시
         document.getElementById('today-label').textContent =
             new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
-        // ── 필터 ─────────────────────────────────────
         function setFilter(filter, el) {
             currentFilter = filter;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -721,7 +835,6 @@
             renderTodos();
         }
 
-        // ── 날짜 상태 판별 ───────────────────────────
         function getStatus(todo) {
             if (todo.completed) return 'completed';
             if (!todo.end_date) return 'no-date';
@@ -733,15 +846,14 @@
         function badgeLabel(status, startDate, endDate) {
             const fmt = d => d ? d.replace(/-/g, '.') : '';
             if (status === 'no-date' || status === 'completed') {
-                return startDate ? `<span class="date-badge no-date">📅 ${fmt(startDate)} ~</span>` : '';
+                return startDate ? `<span class="date-badge no-date">▸ ${fmt(startDate)} ~</span>` : '';
             }
-            const range = startDate ? `${fmt(startDate)} ~ ${fmt(endDate)}` : `~ ${fmt(endDate)}`;
-            const map = { overdue: ['🔴','기한 초과'], 'due-today': ['🟡','오늘 마감'], 'on-track': ['🟢',''] };
+            const range = startDate ? `${fmt(startDate)} ≫ ${fmt(endDate)}` : `≫ ${fmt(endDate)}`;
+            const map = { overdue: ['◆','OVERDUE'], 'due-today': ['◆','DUE TODAY'], 'on-track': ['◆',''] };
             const [icon, label] = map[status];
             return `<span class="date-badge ${status}">${icon}${label ? ' ' + label + ' ·' : ''} ${range}</span>`;
         }
 
-        // ── 통계 업데이트 ────────────────────────────
         function updateStats() {
             document.getElementById('stat-total').textContent   = allTodos.length;
             document.getElementById('stat-done').textContent    = allTodos.filter(t => t.completed).length;
@@ -749,7 +861,6 @@
             document.getElementById('stat-today').textContent   = allTodos.filter(t => !t.completed && t.end_date === today).length;
         }
 
-        // ── 목록 렌더 ────────────────────────────────
         function renderTodos() {
             let filtered = allTodos;
             if (currentFilter === 'active')  filtered = allTodos.filter(t => !t.completed);
@@ -760,7 +871,7 @@
             list.innerHTML = '';
 
             if (filtered.length === 0) {
-                list.innerHTML = '<div class="empty">할 일이 없습니다 ✦</div>';
+                list.innerHTML = '<div class="empty">▸ NO ACTIVE MISSIONS ◂</div>';
                 return;
             }
 
@@ -770,7 +881,7 @@
                 card.className = 'todo-card' + (todo.completed ? ' completed' : status !== 'no-date' ? ` ${status}` : '');
 
                 const commentsHtml = (todo.comments || [])
-                    .map(c => `<div class="comment-item">💬 ${c.content}</div>`).join('');
+                    .map(c => `<div class="comment-item">▸ ${c.content}</div>`).join('');
 
                 card.innerHTML = `
                     <div class="todo-header">
@@ -781,15 +892,15 @@
                             ${badgeLabel(status, todo.start_date, todo.end_date)}
                         </div>
                         <div class="todo-actions">
-                            <button class="btn-icon btn-edit" onclick="openModal(${todo.id})">수정</button>
-                            <button class="btn-icon btn-del" onclick="deleteTodo(${todo.id})">삭제</button>
+                            <button class="btn-icon btn-edit" onclick="openModal(${todo.id})">EDIT</button>
+                            <button class="btn-icon btn-del" onclick="deleteTodo(${todo.id})">DISMISS</button>
                         </div>
                     </div>
                     <div class="comments-section">
                         ${commentsHtml}
                         <div class="comment-form">
-                            <input id="comment-${todo.id}" placeholder="댓글 입력..." />
-                            <button class="btn-comment" onclick="addComment(${todo.id})">등록</button>
+                            <input id="comment-${todo.id}" placeholder="TRANSMIT REPORT / 보고 입력..." />
+                            <button class="btn-comment" onclick="addComment(${todo.id})">SEND</button>
                         </div>
                     </div>
                 `;
@@ -805,7 +916,6 @@
             renderCalendar();
         }
 
-        // ── 추가 ─────────────────────────────────────
         async function addTodo() {
             const title       = document.getElementById('title').value.trim();
             const description = document.getElementById('description').value.trim();
@@ -823,13 +933,11 @@
             fetchTodos();
         }
 
-        // ── 토글 ─────────────────────────────────────
         async function toggleTodo(id) {
             await fetch(`/todos/${id}/toggle`, { method: 'PATCH' });
             fetchTodos();
         }
 
-        // ── 수정 모달 ─────────────────────────────────
         async function openModal(id) {
             const todo = allTodos.find(t => t.id === id);
             if (!todo) return;
@@ -863,14 +971,12 @@
             fetchTodos();
         }
 
-        // ── 삭제 ─────────────────────────────────────
         async function deleteTodo(id) {
-            if (!confirm('정말 삭제할까요?')) return;
+            if (!confirm('▶ DISMISS MISSION? / 정말 폐기할까요?')) return;
             await fetch(`/todos/${id}`, { method: 'DELETE' });
             fetchTodos();
         }
 
-        // ── 댓글 ─────────────────────────────────────
         async function addComment(todoId) {
             const input   = document.getElementById(`comment-${todoId}`);
             const content = input.value.trim();
@@ -884,7 +990,6 @@
             fetchTodos();
         }
 
-        // ── 캘린더 ───────────────────────────────────
         function initCalendar() {
             const now = new Date();
             calYear  = now.getFullYear();
@@ -899,8 +1004,8 @@
         }
 
         function renderCalendar() {
-            const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-            document.getElementById('month-label').textContent = `${calYear}년 ${monthNames[calMonth]}`;
+            const monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+            document.getElementById('month-label').textContent = `${calYear} ${monthNames[calMonth]}`;
 
             const grid = document.getElementById('cal-grid');
             grid.innerHTML = '';
@@ -909,18 +1014,6 @@
             const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
             const prevLast = new Date(calYear, calMonth, 0).getDate();
 
-            // 날짜별 할일 맵 생성
-            const todoMap = {};
-            allTodos.forEach(todo => {
-                [todo.start_date, todo.end_date].forEach((date, idx) => {
-                    if (!date) return;
-                    if (!todoMap[date]) todoMap[date] = [];
-                    todoMap[date].push({ todo, type: idx === 0 ? 'start' : 'end' });
-                });
-                // 시작=마감인 경우 중복 제거 후 'both' 처리
-            });
-
-            // 시작=마감 통합
             const mergedMap = {};
             allTodos.forEach(todo => {
                 const s = todo.start_date, e = todo.end_date;
@@ -977,7 +1070,6 @@
             }
         }
 
-        // 이벤트
         document.getElementById('modal').addEventListener('click', e => {
             if (e.target === e.currentTarget) closeModal();
         });
