@@ -14,7 +14,7 @@ FastAPI 기반 Todo 애플리케이션과 Prometheus / Grafana / Loki / SonarQub
 | **FastAPI 앱** | http://163.239.77.65:5002 | `5002 → 8000` | Todo CRUD API + 웹 UI (로그인: admin/admin) |
 | **FastAPI 메트릭** | http://163.239.77.65:5002/metrics | `5002 → 8000` | Prometheus가 스크랩하는 엔드포인트 |
 | **Prometheus** | http://163.239.77.65:7070 | `7070 → 9090` | 메트릭 수집·쿼리 UI |
-| **Grafana** | http://163.239.77.65:3000 | `3000 → 3000` | 대시보드 시각화 (계정: `admin` / `admin`) |
+| **Grafana** | http://163.239.77.65:3001 | `3001 → 3000` | 대시보드 시각화 (계정: `admin` / `admin`) |
 | **SonarQube** | http://163.239.77.65:9000 | `9000 → 9000` | 코드 품질 정적 분석 |
 | **node-exporter** | http://163.239.77.65:7100/metrics | `7100 → 9100` | 호스트 시스템 메트릭(CPU, 메모리, 디스크) |
 | **cAdvisor** | http://163.239.77.65:7080 | `7080 → 8080` | 컨테이너 메트릭 (CPU·메모리·네트워크) |
@@ -132,13 +132,13 @@ docker compose restart prometheus
 ## 방화벽 인바운드 허용 포트
 
 ```
-5002, 7070, 3000, 9000, 7100, 7080, 8086, 3100
+5002, 7070, 3001, 9000, 7100, 7080, 8086, 3100
 ```
 
 ## Grafana 초기 설정
 
 ### 1) Prometheus 데이터소스 등록
-1. http://163.239.77.65:3000 접속 → `admin` / `admin` 로그인
+1. http://163.239.77.65:3001 접속 → `admin` / `admin` 로그인
 2. **Connections → Data sources → Add data source → Prometheus** 선택
 3. URL: **`http://prometheus:9090`** (컨테이너 내부 통신이므로 호스트 IP가 아님)
 4. **Save & Test** → `Successfully queried the Prometheus API`
