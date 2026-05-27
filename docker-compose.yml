@@ -50,7 +50,7 @@ services:
     image: sonarqube:latest
     container_name: sonarqube
     ports:
-      - "9000:9000"
+      - "9001:9000"   # 호스트 9000이 다른 프로세스에 점유돼 9001로 변경
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true  # 메모리 제한 환경에서 유용한 옵션
     volumes:
